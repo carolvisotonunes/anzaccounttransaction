@@ -7,11 +7,11 @@ public class Account {
     private String accountName;
     private String accountType;
     private String balanceDate;
-    private double currency;
+    private String currency;
     private double availableBalance;
 
 
-    public Account(long accountNumber, long customerId, String accountName, String accountType, String balanceDate, double currency, double availableBalance) {
+    public Account(long accountNumber, long customerId, String accountName, String accountType, String balanceDate, String currency, double availableBalance) {
         this.accountNumber = accountNumber;
         this.customerId = customerId;
         this.accountName = accountName;
@@ -41,7 +41,7 @@ public class Account {
         return balanceDate;
     }
 
-    public double getCurrency() {
+    public String getCurrency() {
         return currency;
     }
 

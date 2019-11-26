@@ -2,6 +2,7 @@ package com.anz.Controller;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.anz.Bean.Account;
 import com.anz.Bean.Greeting;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,4 +19,5 @@ public class GreetingController {
         return new Greeting(counter.incrementAndGet(),
                             String.format(template, name));
     }
+
 }
