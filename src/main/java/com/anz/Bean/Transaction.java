@@ -4,7 +4,7 @@ public class Transaction {
 
 
     private long transactionId;
-    private Account account;
+    private long accountNumber;
     private String accountName;
     private String valueDate;
     private String currency;
@@ -14,9 +14,9 @@ public class Transaction {
     private String description;
 
 
-    public Transaction(long transactionId, Account account, String accountName, String valueDate, String currency, double debitAmount, double creditAmount, String transactionType, String description) {
+    public Transaction(long transactionId, long account, String accountName, String valueDate, String currency, double debitAmount, double creditAmount, String transactionType, String description) {
         this.transactionId = transactionId;
-        this.account = account;
+        this.accountNumber = account;
         this.accountName = accountName;
         this.valueDate = valueDate;
         this.currency = currency;
@@ -31,8 +31,8 @@ public class Transaction {
         return transactionId;
     }
 
-    public Account getAccount() {
-        return account;
+    public long getAccountNumber() {
+        return accountNumber;
     }
 
     public String getAccountName() {
@@ -67,7 +67,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "transactionId=" + transactionId +
-                ", account=" + account +
+                ", accountNumber=" + accountNumber +
                 ", accountName='" + accountName + '\'' +
                 ", valueDate='" + valueDate + '\'' +
                 ", currency='" + currency + '\'' +
