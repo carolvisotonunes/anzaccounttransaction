@@ -8,10 +8,10 @@ import java.util.List;
 
 public class AccountDAO {
 
-    static String jdbcUrl = "jdbc:postgresql://127.0.0.1:5432/postgres";
-    static String username = "carolinenunes";
-    static String password = "password";
-    static ResultSet resultSet = null;
+     String jdbcUrl = "jdbc:postgresql://127.0.0.1:5432/postgres";
+     String username = "carolinenunes";
+     String password = "password";
+     ResultSet resultSet = null;
 
 
     public List<Account> getAll() throws SQLException {
