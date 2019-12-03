@@ -1,22 +1,30 @@
-package com.anz.Bean;
+package com.anz.model;
+
+import java.sql.Timestamp;
 
 public class Transaction {
 
+    private final long transactionId;
+    private final long accountId;
+    private final String accountName;
+    private final Timestamp valueDate;
+    private final String currency;
+    private final double debitAmount;
+    private final double creditAmount;
+    private final String transactionType;
+    private final String description;
 
-    private long transactionId;
-    private long accountNumber;
-    private String accountName;
-    private String valueDate;
-    private String currency;
-    private double debitAmount;
-    private double creditAmount;
-    private String transactionType;
-    private String description;
-
-
-    public Transaction(long transactionId, long account, String accountName, String valueDate, String currency, double debitAmount, double creditAmount, String transactionType, String description) {
+    public Transaction(long transactionId,
+                       long accountId,
+                       String accountName,
+                       Timestamp valueDate,
+                       String currency,
+                       double debitAmount,
+                       double creditAmount,
+                       String transactionType,
+                       String description) {
         this.transactionId = transactionId;
-        this.accountNumber = account;
+        this.accountId = accountId;
         this.accountName = accountName;
         this.valueDate = valueDate;
         this.currency = currency;
@@ -31,15 +39,15 @@ public class Transaction {
         return transactionId;
     }
 
-    public long getAccountNumber() {
-        return accountNumber;
+    public long getAccountId() {
+        return accountId;
     }
 
     public String getAccountName() {
         return accountName;
     }
 
-    public String getValueDate() {
+    public Timestamp getValueDate() {
         return valueDate;
     }
 
@@ -67,7 +75,7 @@ public class Transaction {
     public String toString() {
         return "Transaction{" +
                 "transactionId=" + transactionId +
-                ", accountNumber=" + accountNumber +
+                ", accountId=" + accountId +
                 ", accountName='" + accountName + '\'' +
                 ", valueDate='" + valueDate + '\'' +
                 ", currency='" + currency + '\'' +

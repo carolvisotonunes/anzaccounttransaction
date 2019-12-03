@@ -1,18 +1,25 @@
-package com.anz.Bean;
+package com.anz.model;
+
+import java.sql.Timestamp;
 
 public class Account {
 
-    private long accountNumber;
-    private long customerId;
-    private String accountName;
-    private String accountType;
-    private String balanceDate;
-    private String currency;
-    private double availableBalance;
+    private final long accountId;
+    private final long customerId;
+    private final String accountName;
+    private final String accountType;
+    private final Timestamp balanceDate;
+    private final String currency;
+    private final double availableBalance;
 
-
-    public Account(long accountNumber, long customerId, String accountName, String accountType, String balanceDate, String currency, double availableBalance) {
-        this.accountNumber = accountNumber;
+    public Account(long accountNumber,
+                   long customerId,
+                   String accountName,
+                   String accountType,
+                   Timestamp balanceDate,
+                   String currency,
+                   double availableBalance) {
+        this.accountId = accountNumber;
         this.customerId = customerId;
         this.accountName = accountName;
         this.accountType = accountType;
@@ -21,8 +28,8 @@ public class Account {
         this.availableBalance = availableBalance;
     }
 
-    public long getAccountNumber() {
-        return accountNumber;
+    public long getAccountId() {
+        return accountId;
     }
 
     public long getCustomerId() {
@@ -37,7 +44,7 @@ public class Account {
         return accountType;
     }
 
-    public String getBalanceDate() {
+    public Timestamp getBalanceDate() {
         return balanceDate;
     }
 
@@ -52,7 +59,7 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "accountNumber=" + accountNumber +
+                "accountNumber=" + accountId +
                 ", customerId=" + customerId +
                 ", accountName='" + accountName + '\'' +
                 ", accountType='" + accountType + '\'' +
