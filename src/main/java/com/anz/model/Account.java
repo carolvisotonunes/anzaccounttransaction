@@ -1,6 +1,6 @@
 package com.anz.model;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 public class Account {
 
@@ -8,7 +8,7 @@ public class Account {
     private final long customerId;
     private final String accountName;
     private final String accountType;
-    private final Timestamp balanceDate;
+    private final Date balanceDate;
     private final String currency;
     private final double availableBalance;
 
@@ -16,7 +16,7 @@ public class Account {
                    long customerId,
                    String accountName,
                    String accountType,
-                   Timestamp balanceDate,
+                   Date balanceDate,
                    String currency,
                    double availableBalance) {
         this.accountId = accountNumber;
@@ -44,7 +44,7 @@ public class Account {
         return accountType;
     }
 
-    public Timestamp getBalanceDate() {
+    public Date getBalanceDate() {
         return balanceDate;
     }
 

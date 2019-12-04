@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -31,9 +32,9 @@ public class AccountControllerTest {
     @Test
     public void shouldReturnListWhenAccount() throws SQLException {
         List<Account> accountsMock = new ArrayList<>();
-        Account account1 = new Account(5896478521L, 78541236, "Mark", "SAVINGS", Timestamp.valueOf("2019-01-01 12:30:40"), "AUD", 12568.68);
-        Account account2 = new Account(2145698526, 78541236, "Mark", "SAVINGS", Timestamp.valueOf("2019-01-01 11:30:40"), "USD", 12568.68);
-        Account account3 = new Account(7456385941L, 88542169, "Mark", "SAVINGS", Timestamp.valueOf("2019-01-01 10:30:40"), "EUR", 12568.68);
+        Account account1 = new Account(5896478521L, 78541236, "Mark", "SAVINGS", new Date(1568037600000L), "AUD", 12568.68);
+        Account account2 = new Account(2145698526, 78541236, "Mark", "SAVINGS", new Date(1563544800000L), "USD", 12568.68);
+        Account account3 = new Account(7456385941L, 88542169, "Mark", "SAVINGS", new Date(1563544800000L), "EUR", 12568.68);
         accountsMock.add(account1);
         accountsMock.add(account2);
         accountsMock.add(account3);
