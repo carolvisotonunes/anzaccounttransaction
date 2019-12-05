@@ -1,5 +1,6 @@
 package com.anz.model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Transaction {
@@ -7,7 +8,7 @@ public class Transaction {
     private final long transactionId;
     private final long accountId;
     private final String accountName;
-    private final Timestamp valueDate;
+    private final Date valueDate;
     private final String currency;
     private final double debitAmount;
     private final double creditAmount;
@@ -17,7 +18,7 @@ public class Transaction {
     public Transaction(long transactionId,
                        long accountId,
                        String accountName,
-                       Timestamp valueDate,
+                       Date valueDate,
                        String currency,
                        double debitAmount,
                        double creditAmount,
@@ -47,7 +48,7 @@ public class Transaction {
         return accountName;
     }
 
-    public Timestamp getValueDate() {
+    public Date getValueDate() {
         return valueDate;
     }
 
