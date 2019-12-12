@@ -3,25 +3,24 @@ package com.anz.controller;
 import com.anz.dao.AccountDAO;
 import com.anz.model.Account;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AccountControllerTest {
     @InjectMocks
     private AccountController accountController;
@@ -30,7 +29,7 @@ public class AccountControllerTest {
     AccountDAO accountDAO;
 
     @Test
-    public void shouldReturnListWhenAccount() throws SQLException {
+    public void testListAccount() throws SQLException {
         List<Account> accountsMock = new ArrayList<>();
         Account account1 = new Account(5896478521L, 78541236, "Mark", "SAVINGS", new Date(1568037600000L), "AUD", 12568.68);
         Account account2 = new Account(2145698526, 78541236, "Mark", "SAVINGS", new Date(1563544800000L), "USD", 12568.68);
@@ -39,21 +38,19 @@ public class AccountControllerTest {
         accountsMock.add(account2);
         accountsMock.add(account3);
         when(accountDAO.getAll()).thenReturn(accountsMock);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "AccountController");
         ResponseEntity<List<Account>> accountsController = accountController.accounts();
-        assertEquals(accountsController, ResponseEntity.accepted().headers(headers).body(accountsMock));
-        verify(accountDAO).getAll();
+        assertEquals(accountsController, ResponseEntity.ok().body(accountsMock));
 
     }
 
     @Test
-    public void shouldReturnEmpty() throws SQLException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "AccountController");
-        ResponseEntity<List<Account>> accountsController = new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
-        assertEquals(accountsController.getBody().isEmpty(), ResponseEntity.accepted().headers(headers).body(new ArrayList<>()).getBody().isEmpty());
+    public void testAddAccount() throws SQLException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+        Account account = new Account(5896478500L, 7854123600L, "Someone", "SAVINGS", new Date(1568037600000L), "AUD", 12568.68);
+        when(accountDAO.insert(account)).thenReturn(1);
+        ResponseEntity<Account> responseEntity = accountController.newAccount(account);
+        assertEquals(responseEntity.getStatusCodeValue(), 201);
     }
-
 
 }

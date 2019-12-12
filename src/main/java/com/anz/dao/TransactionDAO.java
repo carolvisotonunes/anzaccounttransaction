@@ -9,45 +9,26 @@ import java.util.List;
 
 @Repository
 public class TransactionDAO {
-    public List<Transaction> getAll(String accountId) throws SQLException {
-        final String ALL_TRANSACTIONS_SQL = "SELECT *"
-                + "FROM transaction "
-                + "WHERE accountnumber = ?";
-
-        List<Transaction> transactions = new ArrayList<Transaction>();
+    public List<Transaction> getAll(Long accountId) throws SQLException {
         try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
-             PreparedStatement preparedStatement = conn.prepareStatement(ALL_TRANSACTIONS_SQL)) {
-            preparedStatement.setString(1, accountId);
+             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction WHERE accountnumber = ?")) {
+            preparedStatement.setString(1, String.valueOf(accountId));
             ResultSet resultSet = preparedStatement.executeQuery();
-            setTransactions(resultSet, transactions);
-
-        } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
-        }
-        return transactions;
-    }
-
-    private void setTransactions(ResultSet resultSet, List<Transaction> transactions) throws SQLException {
-        while (resultSet.next()) {
-            long transactionId = resultSet.getLong("transactionid");
-            long accountNumberB = resultSet.getLong("accountnumber");
-            String accountName = resultSet.getString("accountname");
-            Date valueDate = resultSet.getDate("valuedate");
-            String currency = resultSet.getString("currency");
-            double debitAmount = resultSet.getDouble("debitamount");
-            double creditAmount = resultSet.getDouble("creditamount");
-            String transactionType = resultSet.getString("transactiontype");
-            String description = resultSet.getString("description");
-
-            Transaction transaction = new Transaction(transactionId, accountNumberB, accountName, valueDate, currency, debitAmount, creditAmount, transactionType, description);
-            transactions.add(transaction);
+            return getTransactionsFrom(resultSet);
         }
     }
 
-    public void persist(Transaction transaction) throws SQLException {
-        final String PERSIST_TRANSACTION_SQL = "INSERT INTO transaction VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public List<Transaction> getAll() throws SQLException {
         try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
-             PreparedStatement preparedStatement = conn.prepareStatement(PERSIST_TRANSACTION_SQL)) {
+             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return getTransactionsFrom(resultSet);
+        }
+    }
+
+    public void create(Transaction transaction) throws SQLException {
+        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+             PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO transaction VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setLong(1, transaction.getTransactionId());
             preparedStatement.setLong(2, transaction.getAccountId());
             preparedStatement.setString(3, transaction.getAccountName());
@@ -58,17 +39,12 @@ public class TransactionDAO {
             preparedStatement.setString(8, transaction.getTransactionType());
             preparedStatement.setString(9, transaction.getDescription());
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
         }
-
     }
 
     public void update(Transaction transaction) throws SQLException {
-        final String UPDATE_TRANSACTION_SQL = "UPDATE transaction SET accountnumber=?, accountname=?, valuedate=?, currency=?, debitamount=?, creditamount=?, transactiontype=?, description =?" +
-                "WHERE transactionid=?";
         try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
-             PreparedStatement preparedStatement = conn.prepareStatement(UPDATE_TRANSACTION_SQL)) {
+             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE transaction SET accountnumber=?, accountname=?, valuedate=?, currency=?, debitamount=?, creditamount=?, transactiontype=?, description =? WHERE transactionid=?")) {
             preparedStatement.setLong(1, transaction.getAccountId());
             preparedStatement.setString(2, transaction.getAccountName());
             preparedStatement.setDate(3, transaction.getValueDate());
@@ -79,8 +55,6 @@ public class TransactionDAO {
             preparedStatement.setString(8, transaction.getDescription());
             preparedStatement.setString(9, String.valueOf(transaction.getTransactionId()));
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
         }
     }
 
@@ -90,9 +64,51 @@ public class TransactionDAO {
              PreparedStatement preparedStatement = conn.prepareStatement(DELETE_TRANSACTION_SQL)) {
             preparedStatement.setString(1, String.valueOf(transactionId));
             preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
         }
+    }
 
+    public Transaction getTransaction(String transactionId) throws SQLException {
+        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction WHERE transactionid = ?")) {
+            preparedStatement.setString(1, transactionId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return getTransactionFrom(resultSet);
+        }
+    }
+
+    private Transaction getTransactionFrom(ResultSet resultSet) throws SQLException {
+        Transaction transaction = null;
+        while (resultSet.next()) {
+            long transactionId = resultSet.getLong("transactionid");
+            long accountNumber = resultSet.getLong("accountnumber");
+            String accountName = resultSet.getString("accountname");
+            Date valueDate = resultSet.getDate("valuedate");
+            String currency = resultSet.getString("currency");
+            double debitAmount = resultSet.getDouble("debitamount");
+            double creditAmount = resultSet.getDouble("creditamount");
+            String transactionType = resultSet.getString("transactiontype");
+            String description = resultSet.getString("description");
+            transaction = new Transaction(transactionId, accountNumber, accountName, valueDate, currency, debitAmount, creditAmount, transactionType, description);
+        }
+        return transaction;
+    }
+
+    private List<Transaction> getTransactionsFrom(ResultSet resultSet) throws SQLException {
+        List<Transaction> transactions = new ArrayList<>();
+        while (resultSet.next()) {
+            long transactionId = resultSet.getLong("transactionid");
+            long accountNumber = resultSet.getLong("accountnumber");
+            String accountName = resultSet.getString("accountname");
+            Date valueDate = resultSet.getDate("valuedate");
+            String currency = resultSet.getString("currency");
+            double debitAmount = resultSet.getDouble("debitamount");
+            double creditAmount = resultSet.getDouble("creditamount");
+            String transactionType = resultSet.getString("transactiontype");
+            String description = resultSet.getString("description");
+
+            Transaction transaction = new Transaction(transactionId, accountNumber, accountName, valueDate, currency, debitAmount, creditAmount, transactionType, description);
+            transactions.add(transaction);
+        }
+        return transactions;
     }
 }

@@ -38,21 +38,10 @@ public class TransactionControllerTest {
         Transaction transaction2 = new Transaction(254789652L, 5869712549L, "Bill",  new Date(1575519830307l), "AUD", 865.47, 0.0, "DEBIT", "desc2");
         transactionMock.add(transaction1);
         transactionMock.add(transaction2);
-        when(transactionDAO.getAll("5869712549")).thenReturn(transactionMock);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "TransactionController");
-        ResponseEntity<List<Transaction>> transactionsController = transactionController.transactions("5869712549");
-        assertEquals(transactionsController, ResponseEntity.accepted().headers(headers).body(transactionMock));
-        verify(transactionDAO).getAll("5869712549");
-    }
-
-    @Test
-    public void shouldReturnEmptyListWhenTheAccountIDIsEmpty() throws SQLException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "Transaction");
-        ResponseEntity<List<Transaction>> transactionsController = new ResponseEntity<>(new ArrayList<>(), HttpStatus.NOT_FOUND);
-        assertEquals(transactionsController.getBody().isEmpty(), ResponseEntity.accepted().headers(headers).body(new ArrayList<>()).getBody().isEmpty());
+        when(transactionDAO.getAll()).thenReturn(transactionMock);
+        ResponseEntity<List<Transaction>> transactionsController = transactionController.transactions();
+        assertEquals(transactionsController, ResponseEntity.ok().body(transactionMock));
+        //verify(transactionDAO).getAll("5869712549");
     }
 
 }

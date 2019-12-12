@@ -2,67 +2,81 @@ package com.anz.controller;
 
 import com.anz.dao.AccountDAO;
 import com.anz.model.Account;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class AccountController {
-    AccountDAO accountDAO;
+    private AccountDAO accountDAO;
 
     public AccountController(AccountDAO accountDAO) {
         this.accountDAO = accountDAO;
     }
 
-    @RequestMapping("/account")
+    @GetMapping("/accounts")
     public ResponseEntity<List<Account>> accounts() {
         try {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Responded", "AccountController");
-            return ResponseEntity.accepted().headers(headers).body(accountDAO.getAll());
-        } catch (SQLException e) {
-            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @PostMapping("/account")
-    public ResponseEntity<Account> newAccount(@RequestBody Account account) throws SQLException {
-        try {
-            accountDAO.persist(account);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-
+            return ResponseEntity.ok(accountDAO.getAll());
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("/account")
-    public ResponseEntity<Account> updateAccount(@RequestBody Account account) throws SQLException {
+    @GetMapping("/accounts/{accountID}")
+    public ResponseEntity<Account> account(@PathVariable("accountID") Long accountId) {
+        try {
+            if (accountDAO.getAccount(accountId)!= null)
+                return ResponseEntity.ok(accountDAO.getAccount(accountId));
+            else
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/accounts")
+    public ResponseEntity<Account> newAccount(@RequestBody Account account) {
+        try {
+            if (accountDAO.insert(account) == 1)
+                return ResponseEntity.created(URI.create("http://localhost:8080/accounts/" + account.getAccountId())).body(account);
+             else
+                 return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/accounts")
+    public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
         try {
             accountDAO.update(account);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
-
+            return ResponseEntity.ok().build();
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @DeleteMapping("/account/{accountID}")
-    public ResponseEntity<String> deleteAccount(@PathVariable("accountID") Long accountId) throws SQLException {
+    @DeleteMapping("/accounts/{accountID}")
+    public ResponseEntity<String> deleteAccount(@PathVariable("accountID") Long accountId) {
         try {
-            accountDAO.delete(accountId);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+            Account accountIdToBeDeleted = accountDAO.getAccount(accountId);
+            if (accountIdToBeDeleted != null)
+                accountDAO.delete(accountId);
+            else
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok().build();
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity<>(new String(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }
