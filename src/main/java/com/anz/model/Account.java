@@ -12,14 +12,8 @@ public class Account {
     private final String currency;
     private final double availableBalance;
 
-    public Account(long accountNumber,
-                   long customerId,
-                   String accountName,
-                   String accountType,
-                   Date balanceDate,
-                   String currency,
-                   double availableBalance) {
-        this.accountId = accountNumber;
+    public Account(long accountId, long customerId, String accountName, String accountType, Date balanceDate, String currency, double availableBalance) {
+        this.accountId = accountId;
         this.customerId = customerId;
         this.accountName = accountName;
         this.accountType = accountType;
@@ -59,7 +53,7 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "accountNumber=" + accountId +
+                "accountId=" + accountId +
                 ", customerId=" + customerId +
                 ", accountName='" + accountName + '\'' +
                 ", accountType='" + accountType + '\'' +

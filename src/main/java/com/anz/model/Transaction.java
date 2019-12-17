@@ -14,15 +14,8 @@ public class Transaction {
     private final String transactionType;
     private final String description;
 
-    public Transaction(long transactionId,
-                       long accountId,
-                       String accountName,
-                       Date valueDate,
-                       String currency,
-                       double debitAmount,
-                       double creditAmount,
-                       String transactionType,
-                       String description) {
+
+    public Transaction(long transactionId, long accountId, String accountName, Date valueDate, String currency, double debitAmount, double creditAmount, String transactionType, String description) {
         this.transactionId = transactionId;
         this.accountId = accountId;
         this.accountName = accountName;
@@ -33,7 +26,6 @@ public class Transaction {
         this.transactionType = transactionType;
         this.description = description;
     }
-
 
     public long getTransactionId() {
         return transactionId;
@@ -77,7 +69,7 @@ public class Transaction {
                 "transactionId=" + transactionId +
                 ", accountId=" + accountId +
                 ", accountName='" + accountName + '\'' +
-                ", valueDate='" + valueDate + '\'' +
+                ", valueDate=" + valueDate +
                 ", currency='" + currency + '\'' +
                 ", debitAmount=" + debitAmount +
                 ", creditAmount=" + creditAmount +

@@ -1,6 +1,7 @@
 package com.anz.dao;
 
 import com.anz.model.Account;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -10,9 +11,20 @@ import java.util.List;
 @Repository
 public class AccountDAO {
 
+    private BasicDataSource ds;
+
+    public AccountDAO() {
+        ds = new BasicDataSource();
+        ds.setUrl(ConnectionDAO.JDBC_URL);
+        ds.setUsername(ConnectionDAO.USERNAME);
+        ds.setPassword(ConnectionDAO.PASSWORD);
+        ds.setMinIdle(5);
+        ds.setMaxIdle(10);
+        ds.setMaxOpenPreparedStatements(100);
+    }
+
     public List<Account> getAll() throws SQLException {
-        // TODO: Investigate how to use a connection pool instead of creating a new connection every time
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM account")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             return getAccounts(resultSet);
@@ -20,7 +32,7 @@ public class AccountDAO {
     }
 
     public int insert(Account account) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO account VALUES (?, ?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setLong(1, account.getAccountId());
             preparedStatement.setLong(2, account.getCustomerId());
@@ -29,12 +41,12 @@ public class AccountDAO {
             preparedStatement.setDate(5, account.getBalanceDate());
             preparedStatement.setString(6, account.getCurrency());
             preparedStatement.setDouble(7, account.getAvailableBalance());
-             return preparedStatement.executeUpdate();
+            return preparedStatement.executeUpdate();
         }
     }
 
     public void update(Account account) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("UPDATE account SET customerid=?, accountname=?, accounttype=?, balancedate=?, currency=?, availablebalance=? " +
                      "WHERE accountnumber=?")) {
             preparedStatement.setLong(1, account.getCustomerId());
@@ -49,7 +61,7 @@ public class AccountDAO {
     }
 
     public void delete(Long accountId) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM account WHERE accountnumber=?")) {
             preparedStatement.setString(1, String.valueOf(accountId));
             preparedStatement.executeUpdate();
@@ -57,7 +69,7 @@ public class AccountDAO {
     }
 
     public Account getAccount(Long accountId) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM account WHERE accountnumber = ?")) {
             preparedStatement.setString(1, String.valueOf(accountId));
             ResultSet resultSet = preparedStatement.executeQuery();

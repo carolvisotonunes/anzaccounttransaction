@@ -1,6 +1,7 @@
 package com.anz.dao;
 
 import com.anz.model.Transaction;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -9,8 +10,21 @@ import java.util.List;
 
 @Repository
 public class TransactionDAO {
+
+    private BasicDataSource ds;
+
+    public TransactionDAO() {
+        ds = new BasicDataSource();
+        ds.setUrl(ConnectionDAO.JDBC_URL);
+        ds.setUsername(ConnectionDAO.USERNAME);
+        ds.setPassword(ConnectionDAO.PASSWORD);
+        ds.setMinIdle(5);
+        ds.setMaxIdle(10);
+        ds.setMaxOpenPreparedStatements(100);
+    }
+
     public List<Transaction> getAll(Long accountId) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction WHERE accountnumber = ?")) {
             preparedStatement.setString(1, String.valueOf(accountId));
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -19,7 +33,7 @@ public class TransactionDAO {
     }
 
     public List<Transaction> getAll() throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction")) {
             ResultSet resultSet = preparedStatement.executeQuery();
             return getTransactionsFrom(resultSet);
@@ -27,7 +41,7 @@ public class TransactionDAO {
     }
 
     public void create(Transaction transaction) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO transaction VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
             preparedStatement.setLong(1, transaction.getTransactionId());
             preparedStatement.setLong(2, transaction.getAccountId());
@@ -43,7 +57,7 @@ public class TransactionDAO {
     }
 
     public void update(Transaction transaction) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("UPDATE transaction SET accountnumber=?, accountname=?, valuedate=?, currency=?, debitamount=?, creditamount=?, transactiontype=?, description =? WHERE transactionid=?")) {
             preparedStatement.setLong(1, transaction.getAccountId());
             preparedStatement.setString(2, transaction.getAccountName());
@@ -60,7 +74,7 @@ public class TransactionDAO {
 
     public void delete(Long transactionId) throws SQLException {
         final String DELETE_TRANSACTION_SQL = "DELETE FROM transaction WHERE transactionid=?";
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(DELETE_TRANSACTION_SQL)) {
             preparedStatement.setString(1, String.valueOf(transactionId));
             preparedStatement.executeUpdate();
@@ -68,7 +82,7 @@ public class TransactionDAO {
     }
 
     public Transaction getTransaction(String transactionId) throws SQLException {
-        try (Connection conn = DriverManager.getConnection(ConnectionDAO.JDBCUrl, ConnectionDAO.USERNAME, ConnectionDAO.PASSWORD);
+        try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction WHERE transactionid = ?")) {
             preparedStatement.setString(1, transactionId);
             ResultSet resultSet = preparedStatement.executeQuery();
