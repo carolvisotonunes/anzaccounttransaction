@@ -1,6 +1,10 @@
 package com.anz.model;
 
-import java.sql.Date;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.time.LocalDate;
+import java.util.Objects;
 
 public class Account {
 
@@ -8,11 +12,18 @@ public class Account {
     private final long customerId;
     private final String accountName;
     private final String accountType;
-    private final Date balanceDate;
+    private final LocalDate balanceDate;
     private final String currency;
     private final double availableBalance;
 
-    public Account(long accountId, long customerId, String accountName, String accountType, Date balanceDate, String currency, double availableBalance) {
+    @JsonCreator
+    public Account(@JsonProperty("accountId") long accountId,
+                   @JsonProperty("customerId") long customerId,
+                   @JsonProperty("accountName") String accountName,
+                   @JsonProperty("accountType") String accountType,
+                   @JsonProperty("balanceDate") LocalDate balanceDate,
+                   @JsonProperty("currency") String currency,
+                   @JsonProperty("availableBalance") double availableBalance) {
         this.accountId = accountId;
         this.customerId = customerId;
         this.accountName = accountName;
@@ -38,7 +49,7 @@ public class Account {
         return accountType;
     }
 
-    public Date getBalanceDate() {
+    public LocalDate getBalanceDate() {
         return balanceDate;
     }
 
@@ -48,6 +59,26 @@ public class Account {
 
     public double getAvailableBalance() {
         return availableBalance;
+    }
+
+    // TODO: Review equals and hashcode of Java
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return accountId == account.accountId &&
+                customerId == account.customerId &&
+                Double.compare(account.availableBalance, availableBalance) == 0 &&
+                Objects.equals(accountName, account.accountName) &&
+                Objects.equals(accountType, account.accountType) &&
+                Objects.equals(balanceDate, account.balanceDate) &&
+                Objects.equals(currency, account.currency);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountId, customerId, accountName, accountType, balanceDate, currency, availableBalance);
     }
 
     @Override

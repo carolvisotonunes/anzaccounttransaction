@@ -19,12 +19,15 @@ public class TransactionController {
         this.transactionDAO = transactionDAO;
     }
 
+    // FIXME: Put the printStackTrace in all of the methods
+    // FIXME: Return TransactionResponse instead of list of transactions
+    // FIXME: Fix types of ResponseEntity to have <>
     @GetMapping(value = "/transactions")
     public ResponseEntity<List<Transaction>> transactions() {
         try {
             return ResponseEntity.ok(transactionDAO.getAll());
         } catch (SQLException e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -44,6 +47,7 @@ public class TransactionController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        // FIXME: Put inside catch
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -73,11 +77,12 @@ public class TransactionController {
     public ResponseEntity<String> deleteTransaction(@PathVariable("transactionId") Long transactionId) {
         try {
             Transaction transactionIdToBeDeleted = transactionDAO.getTransaction(String.valueOf(transactionId));
-            if (transactionIdToBeDeleted != null)
+            if (transactionIdToBeDeleted != null) {
                 transactionDAO.delete(transactionId);
-            else
+                return ResponseEntity.ok().build();
+            } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            return ResponseEntity.ok().build();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

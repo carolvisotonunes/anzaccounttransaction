@@ -1,21 +1,23 @@
 package com.anz.model;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
+
+// FIXME: Put JSON annotations
 public class Transaction {
 
     private final long transactionId;
     private final long accountId;
     private final String accountName;
-    private final Date valueDate;
+    private final LocalDate valueDate; // FIXME: transform this into a localdate
     private final String currency;
     private final double debitAmount;
     private final double creditAmount;
     private final String transactionType;
     private final String description;
 
-
-    public Transaction(long transactionId, long accountId, String accountName, Date valueDate, String currency, double debitAmount, double creditAmount, String transactionType, String description) {
+    public Transaction(long transactionId, long accountId, String accountName, LocalDate valueDate, String currency, double debitAmount, double creditAmount, String transactionType, String description) {
         this.transactionId = transactionId;
         this.accountId = accountId;
         this.accountName = accountName;
@@ -39,7 +41,7 @@ public class Transaction {
         return accountName;
     }
 
-    public Date getValueDate() {
+    public LocalDate getValueDate() {
         return valueDate;
     }
 

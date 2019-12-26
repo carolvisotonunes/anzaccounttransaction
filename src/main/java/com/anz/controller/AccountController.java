@@ -2,13 +2,13 @@ package com.anz.controller;
 
 import com.anz.dao.AccountDAO;
 import com.anz.model.Account;
+import com.anz.responses.AccountsResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 public class AccountController {
@@ -19,9 +19,9 @@ public class AccountController {
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> accounts() {
+    public ResponseEntity<AccountsResponse> accounts() {
         try {
-            return ResponseEntity.ok(accountDAO.getAll());
+            return ResponseEntity.ok(new AccountsResponse(accountDAO.getAll()));
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -31,10 +31,11 @@ public class AccountController {
     @GetMapping("/accounts/{accountID}")
     public ResponseEntity<Account> account(@PathVariable("accountID") Long accountId) {
         try {
-            if (accountDAO.getAccount(accountId)!= null)
+            if (accountDAO.getAccount(accountId)!= null) {
                 return ResponseEntity.ok(accountDAO.getAccount(accountId));
-            else
+            } else {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -44,10 +45,12 @@ public class AccountController {
     @PostMapping("/accounts")
     public ResponseEntity<Account> newAccount(@RequestBody Account account) {
         try {
-            if (accountDAO.insert(account) == 1)
+            // FIXME: Remove this if
+            if (accountDAO.insert(account) == 1) {
                 return ResponseEntity.created(URI.create("http://localhost:8080/accounts/" + account.getAccountId())).body(account);
-             else
-                 return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -69,10 +72,11 @@ public class AccountController {
     public ResponseEntity<String> deleteAccount(@PathVariable("accountID") Long accountId) {
         try {
             Account accountIdToBeDeleted = accountDAO.getAccount(accountId);
-            if (accountIdToBeDeleted != null)
+            if (accountIdToBeDeleted != null) {
                 accountDAO.delete(accountId);
-            else
+            } else {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
             return ResponseEntity.ok().build();
         } catch (SQLException e) {
             e.printStackTrace();

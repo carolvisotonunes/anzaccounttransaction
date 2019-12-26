@@ -5,6 +5,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public class AccountDAO {
 
     public AccountDAO() {
         ds = new BasicDataSource();
-        ds.setUrl(ConnectionDAO.JDBC_URL);
-        ds.setUsername(ConnectionDAO.USERNAME);
-        ds.setPassword(ConnectionDAO.PASSWORD);
+        ds.setUrl(DatabaseConstants.JDBC_URL);
+        ds.setUsername(DatabaseConstants.USERNAME);
+        ds.setPassword(DatabaseConstants.PASSWORD);
         ds.setMinIdle(5);
         ds.setMaxIdle(10);
         ds.setMaxOpenPreparedStatements(100);
@@ -38,7 +39,7 @@ public class AccountDAO {
             preparedStatement.setLong(2, account.getCustomerId());
             preparedStatement.setString(3, account.getAccountName());
             preparedStatement.setString(4, account.getAccountType());
-            preparedStatement.setDate(5, account.getBalanceDate());
+            preparedStatement.setDate(5, Date.valueOf(account.getBalanceDate()));
             preparedStatement.setString(6, account.getCurrency());
             preparedStatement.setDouble(7, account.getAvailableBalance());
             return preparedStatement.executeUpdate();
@@ -52,7 +53,7 @@ public class AccountDAO {
             preparedStatement.setLong(1, account.getCustomerId());
             preparedStatement.setString(2, account.getAccountName());
             preparedStatement.setString(3, account.getAccountType());
-            preparedStatement.setDate(4, account.getBalanceDate());
+            preparedStatement.setDate(4, Date.valueOf(account.getBalanceDate()));
             preparedStatement.setString(5, account.getCurrency());
             preparedStatement.setDouble(6, account.getAvailableBalance());
             preparedStatement.setString(7, String.valueOf(account.getAccountId()));
@@ -85,7 +86,7 @@ public class AccountDAO {
             long customerId = resultSet.getLong("customerid");
             String accountName = resultSet.getString("accountname");
             String accountType = resultSet.getString("accounttype");
-            Date balanceDate = resultSet.getDate("balancedate");
+            LocalDate balanceDate = resultSet.getDate("balancedate").toLocalDate();
             String currency = resultSet.getString("currency");
             double availableBalance = resultSet.getDouble("availablebalance");
             Account account = new Account(accountNumber, customerId, accountName, accountType,
@@ -102,7 +103,7 @@ public class AccountDAO {
             long customerId = resultSet.getLong("customerid");
             String accountName = resultSet.getString("accountname");
             String accountType = resultSet.getString("accounttype");
-            Date balanceDate = resultSet.getDate("balancedate");
+            LocalDate balanceDate = resultSet.getDate("balancedate").toLocalDate();
             String currency = resultSet.getString("currency");
             double availableBalance = resultSet.getDouble("availablebalance");
             account = new Account(accountNumber, customerId, accountName, accountType,

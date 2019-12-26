@@ -5,6 +5,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public class TransactionDAO {
 
     public TransactionDAO() {
         ds = new BasicDataSource();
-        ds.setUrl(ConnectionDAO.JDBC_URL);
-        ds.setUsername(ConnectionDAO.USERNAME);
-        ds.setPassword(ConnectionDAO.PASSWORD);
+        ds.setUrl(DatabaseConstants.JDBC_URL);
+        ds.setUsername(DatabaseConstants.USERNAME);
+        ds.setPassword(DatabaseConstants.PASSWORD);
         ds.setMinIdle(5);
         ds.setMaxIdle(10);
         ds.setMaxOpenPreparedStatements(100);
@@ -46,7 +47,7 @@ public class TransactionDAO {
             preparedStatement.setLong(1, transaction.getTransactionId());
             preparedStatement.setLong(2, transaction.getAccountId());
             preparedStatement.setString(3, transaction.getAccountName());
-            preparedStatement.setDate(4, transaction.getValueDate());
+            preparedStatement.setDate(4, Date.valueOf(transaction.getValueDate()));
             preparedStatement.setString(5, transaction.getCurrency());
             preparedStatement.setDouble(6, transaction.getDebitAmount());
             preparedStatement.setDouble(7, transaction.getCreditAmount());
@@ -61,7 +62,7 @@ public class TransactionDAO {
              PreparedStatement preparedStatement = conn.prepareStatement("UPDATE transaction SET accountnumber=?, accountname=?, valuedate=?, currency=?, debitamount=?, creditamount=?, transactiontype=?, description =? WHERE transactionid=?")) {
             preparedStatement.setLong(1, transaction.getAccountId());
             preparedStatement.setString(2, transaction.getAccountName());
-            preparedStatement.setDate(3, transaction.getValueDate());
+            preparedStatement.setDate(3, Date.valueOf(transaction.getValueDate()));
             preparedStatement.setString(4, transaction.getCurrency());
             preparedStatement.setDouble(5, transaction.getDebitAmount());
             preparedStatement.setDouble(6, transaction.getCreditAmount());
@@ -96,7 +97,7 @@ public class TransactionDAO {
             long transactionId = resultSet.getLong("transactionid");
             long accountNumber = resultSet.getLong("accountnumber");
             String accountName = resultSet.getString("accountname");
-            Date valueDate = resultSet.getDate("valuedate");
+            LocalDate valueDate = resultSet.getDate("valuedate").toLocalDate();
             String currency = resultSet.getString("currency");
             double debitAmount = resultSet.getDouble("debitamount");
             double creditAmount = resultSet.getDouble("creditamount");
@@ -113,7 +114,7 @@ public class TransactionDAO {
             long transactionId = resultSet.getLong("transactionid");
             long accountNumber = resultSet.getLong("accountnumber");
             String accountName = resultSet.getString("accountname");
-            Date valueDate = resultSet.getDate("valuedate");
+            LocalDate valueDate = resultSet.getDate("valuedate").toLocalDate();
             String currency = resultSet.getString("currency");
             double debitAmount = resultSet.getDouble("debitamount");
             double creditAmount = resultSet.getDouble("creditamount");
