@@ -6,10 +6,16 @@ import com.anz.responses.AccountsResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.sql.SQLException;
 
+@Slf4j
 @RestController
 public class AccountController {
     private AccountDAO accountDAO;
@@ -24,63 +30,64 @@ public class AccountController {
             return ResponseEntity.ok(new AccountsResponse(accountDAO.getAll()));
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/accounts/{accountID}")
     public ResponseEntity<Account> account(@PathVariable("accountID") Long accountId) {
         try {
-            if (accountDAO.getAccount(accountId)!= null) {
-                return ResponseEntity.ok(accountDAO.getAccount(accountId));
+            if (accountDAO.getAccountByID(accountId) != null) {
+                return ResponseEntity.ok(accountDAO.getAccountByID(accountId));
             } else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @PostMapping("/accounts")
     public ResponseEntity<Account> newAccount(@RequestBody Account account) {
         try {
-            // FIXME: Remove this if
-            if (accountDAO.insert(account) == 1) {
-                return ResponseEntity.created(URI.create("http://localhost:8080/accounts/" + account.getAccountId())).body(account);
-            } else {
-                return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            accountDAO.insert(account);
+            return ResponseEntity.created(URI.create("http://localhost:8080/accounts/" + account.getAccountId())).body(account);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/accounts")
     public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
         try {
-            accountDAO.update(account);
-            return ResponseEntity.ok().build();
+            Account accountIdToBeUpdated = accountDAO.getAccountByID(account.getAccountId());
+            if (accountIdToBeUpdated != null) {
+                accountDAO.update(account);
+                return ResponseEntity.ok(account);
+            } else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("/accounts/{accountID}")
     public ResponseEntity<String> deleteAccount(@PathVariable("accountID") Long accountId) {
         try {
-            Account accountIdToBeDeleted = accountDAO.getAccount(accountId);
+            Account accountIdToBeDeleted = accountDAO.getAccountByID(accountId);
             if (accountIdToBeDeleted != null) {
                 accountDAO.delete(accountId);
             } else {
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return ResponseEntity.ok().build();
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -47,7 +47,7 @@ public class TransactionDAO {
             preparedStatement.setLong(1, transaction.getTransactionId());
             preparedStatement.setLong(2, transaction.getAccountId());
             preparedStatement.setString(3, transaction.getAccountName());
-            preparedStatement.setDate(4, Date.valueOf(transaction.getValueDate()));
+            preparedStatement.setObject(4, transaction.getValueDate());
             preparedStatement.setString(5, transaction.getCurrency());
             preparedStatement.setDouble(6, transaction.getDebitAmount());
             preparedStatement.setDouble(7, transaction.getCreditAmount());
@@ -62,7 +62,7 @@ public class TransactionDAO {
              PreparedStatement preparedStatement = conn.prepareStatement("UPDATE transaction SET accountnumber=?, accountname=?, valuedate=?, currency=?, debitamount=?, creditamount=?, transactiontype=?, description =? WHERE transactionid=?")) {
             preparedStatement.setLong(1, transaction.getAccountId());
             preparedStatement.setString(2, transaction.getAccountName());
-            preparedStatement.setDate(3, Date.valueOf(transaction.getValueDate()));
+            preparedStatement.setObject(3, transaction.getValueDate());
             preparedStatement.setString(4, transaction.getCurrency());
             preparedStatement.setDouble(5, transaction.getDebitAmount());
             preparedStatement.setDouble(6, transaction.getCreditAmount());

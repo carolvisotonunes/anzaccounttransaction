@@ -1,15 +1,14 @@
 package com.anz.controller;
 
 import com.anz.dao.TransactionDAO;
-import com.anz.model.Account;
 import com.anz.model.Transaction;
+import com.anz.responses.TransactionsResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 public class TransactionController {
@@ -19,24 +18,23 @@ public class TransactionController {
         this.transactionDAO = transactionDAO;
     }
 
-    // FIXME: Put the printStackTrace in all of the methods
-    // FIXME: Return TransactionResponse instead of list of transactions
-    // FIXME: Fix types of ResponseEntity to have <>
     @GetMapping(value = "/transactions")
-    public ResponseEntity<List<Transaction>> transactions() {
+    public ResponseEntity<TransactionsResponse> transactions() {
         try {
-            return ResponseEntity.ok(transactionDAO.getAll());
+            return ResponseEntity.ok(new TransactionsResponse(transactionDAO.getAll()));
         } catch (SQLException e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping(value = "/transactions/account/{accountId}")
-    public ResponseEntity<List<Transaction>> transactionsFromAccountId(@PathVariable Long accountId) {
+    public ResponseEntity<TransactionsResponse> transactionsFromAccountId(@PathVariable Long accountId) {
         try {
-            return ResponseEntity.ok(transactionDAO.getAll(accountId));
+            return ResponseEntity.ok(new TransactionsResponse(transactionDAO.getAll(accountId)));
         } catch (SQLException e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -46,9 +44,8 @@ public class TransactionController {
             return ResponseEntity.ok(transactionDAO.getTransaction(transactionId));
         } catch (SQLException e) {
             e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        // FIXME: Put inside catch
-        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/transactions")
@@ -58,12 +55,12 @@ public class TransactionController {
             return ResponseEntity.created(URI.create("http://localhost:8080/transactions/transaction/" + transaction.getTransactionId())).body(transaction);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/transactions")
-    public ResponseEntity<Account> updateTransaction(@RequestBody Transaction transaction) {
+    public ResponseEntity<Transaction> updateTransaction(@RequestBody Transaction transaction) {
         try {
             transactionDAO.update(transaction);
             return ResponseEntity.ok().build();

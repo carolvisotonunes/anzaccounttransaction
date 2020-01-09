@@ -39,7 +39,7 @@ public class AccountDAO {
             preparedStatement.setLong(2, account.getCustomerId());
             preparedStatement.setString(3, account.getAccountName());
             preparedStatement.setString(4, account.getAccountType());
-            preparedStatement.setDate(5, Date.valueOf(account.getBalanceDate()));
+            preparedStatement.setObject(5, account.getBalanceDate());
             preparedStatement.setString(6, account.getCurrency());
             preparedStatement.setDouble(7, account.getAvailableBalance());
             return preparedStatement.executeUpdate();
@@ -53,7 +53,7 @@ public class AccountDAO {
             preparedStatement.setLong(1, account.getCustomerId());
             preparedStatement.setString(2, account.getAccountName());
             preparedStatement.setString(3, account.getAccountType());
-            preparedStatement.setDate(4, Date.valueOf(account.getBalanceDate()));
+            preparedStatement.setObject(4, account.getBalanceDate());
             preparedStatement.setString(5, account.getCurrency());
             preparedStatement.setDouble(6, account.getAvailableBalance());
             preparedStatement.setString(7, String.valueOf(account.getAccountId()));
@@ -69,12 +69,12 @@ public class AccountDAO {
         }
     }
 
-    public Account getAccount(Long accountId) throws SQLException {
+    public Account getAccountByID(Long accountId) throws SQLException {
         try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM account WHERE accountnumber = ?")) {
             preparedStatement.setString(1, String.valueOf(accountId));
             ResultSet resultSet = preparedStatement.executeQuery();
-            return getAccount(resultSet);
+            return getAccountByID(resultSet);
         }
 
     }
@@ -96,7 +96,7 @@ public class AccountDAO {
         return accounts;
     }
 
-    private Account getAccount(ResultSet resultSet) throws SQLException {
+    private Account getAccountByID(ResultSet resultSet) throws SQLException {
         Account account = null;
         while (resultSet.next()) {
             long accountNumber = resultSet.getLong("accountnumber");
