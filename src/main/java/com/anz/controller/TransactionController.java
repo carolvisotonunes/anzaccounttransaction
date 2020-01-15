@@ -41,7 +41,12 @@ public class TransactionController {
     @GetMapping("/transactions/transaction/{transactionId}")
     public ResponseEntity<Transaction> transactionsFromTransactionId(@PathVariable String transactionId) {
         try {
-            return ResponseEntity.ok(transactionDAO.getTransaction(transactionId));
+            if (transactionDAO.getTransaction(transactionId)!= null){
+                return ResponseEntity.ok(transactionDAO.getTransaction(transactionId));
+            } else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -62,8 +67,13 @@ public class TransactionController {
     @PutMapping("/transactions")
     public ResponseEntity<Transaction> updateTransaction(@RequestBody Transaction transaction) {
         try {
-            transactionDAO.update(transaction);
-            return ResponseEntity.ok().build();
+            Transaction transactionIdToBeUpdated = transactionDAO.getTransaction(String.valueOf(transaction.getTransactionId()));
+            if (transactionIdToBeUpdated != null) {
+                transactionDAO.update(transaction);
+                return ResponseEntity.ok(transaction);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,10 +86,10 @@ public class TransactionController {
             Transaction transactionIdToBeDeleted = transactionDAO.getTransaction(String.valueOf(transactionId));
             if (transactionIdToBeDeleted != null) {
                 transactionDAO.delete(transactionId);
-                return ResponseEntity.ok().build();
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+            return ResponseEntity.ok().build();
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -10,8 +10,9 @@ import java.util.Objects;
 public class TransactionsResponse {
 
     private List<Transaction> transactions;
+
     @JsonCreator
-    public TransactionsResponse(@JsonProperty("transactions")List<Transaction> transactions) {
+    public TransactionsResponse(@JsonProperty("transactions") List<Transaction> transactions) {
         this.transactions = transactions;
     }
 

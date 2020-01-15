@@ -8,7 +8,6 @@ import com.anz.model.Account;
 import com.anz.responses.AccountsResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +24,14 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AccountControllerTest {
     private static final String ACCOUNTS_URL = "http://localhost:8080/accounts";
-
+    AccountClient accountClient;
     private RestTemplate restTemplate;
     private AccountDAO accountDAO;
     private WebClient webClient;
-    AccountClient accountClient;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -112,7 +110,7 @@ public class AccountControllerTest {
     @Test
     void updateAccount() throws SQLException, AccountErrorResponse {
         //given
-       Account insert = new Account(2, 78541236, "Mark", "SAVINGS",
+        Account insert = new Account(2, 78541236, "Mark", "SAVINGS",
                 LocalDate.of(2019, 12, 1), "AUD", 1000);
         accountDAO.insert(insert);
 

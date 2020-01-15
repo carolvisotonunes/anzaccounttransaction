@@ -6,19 +6,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.client.reactive.ClientHttpRequest;
-import org.springframework.web.reactive.function.BodyInserter;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Slf4j
 public class AccountClient {
-    Logger  log =  LoggerFactory.getLogger(AccountClient.class);
     public static final String ACCOUNT_BY_ID_PATH_PARAM = "/accounts/{accountID}";
     public static final String ADD_ACCOUNT = "/accounts/";
     public static final String UPDATE_ACCOUNT = "/accounts/";
     public static final String ACCOUNT_DELETED_BY_ID_PATH_PARAM = "/accounts/{accountID}";
+    Logger log = LoggerFactory.getLogger(AccountClient.class);
     private WebClient webClient;
 
     public AccountClient(WebClient webClient) {
@@ -31,7 +28,7 @@ public class AccountClient {
                     .retrieve()
                     .bodyToMono(Account.class) //body is converted to Mono(Represents single item)
                     .block();
-        }catch (WebClientResponseException ex) {
+        } catch (WebClientResponseException ex) {
             log.error("WebClientResponseException - Error Message is : {} ", ex, ex.getResponseBodyAsString());
             throw new AccountErrorResponse(ex.getStatusText(), ex);
         } catch (Exception ex) {
@@ -61,7 +58,7 @@ public class AccountClient {
         return movie;
     }
 
-    public HttpStatus updateAccount( Account account) throws AccountErrorResponse {
+    public HttpStatus updateAccount(Account account) throws AccountErrorResponse {
         try {
             return webClient.put().uri(UPDATE_ACCOUNT, account.getAccountId())
                     .syncBody(account)
@@ -85,7 +82,7 @@ public class AccountClient {
                     .exchange()
                     .block()
                     .statusCode();
-        }catch (WebClientResponseException ex) {
+        } catch (WebClientResponseException ex) {
             log.error("WebClientResponseException - Error Message is : {}", ex, ex.getResponseBodyAsString());
             throw new AccountErrorResponse(ex.getStatusText(), ex);
         } catch (Exception ex) {

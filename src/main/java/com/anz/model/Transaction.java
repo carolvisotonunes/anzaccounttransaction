@@ -19,15 +19,15 @@ public class Transaction {
     private final String description;
 
     @JsonCreator
-    public Transaction(@JsonProperty("transactionId")long transactionId,
-                       @JsonProperty("accountId")long accountId,
-                       @JsonProperty("accountName")String accountName,
-                       @JsonProperty("valueDate")LocalDate valueDate,
-                       @JsonProperty("currency")String currency,
-                       @JsonProperty("debitAmount")double debitAmount,
-                       @JsonProperty("creditAmount")double creditAmount,
-                       @JsonProperty("transactionType")String transactionType,
-                       @JsonProperty("description")String description) {
+    public Transaction(@JsonProperty("transactionId") long transactionId,
+                       @JsonProperty("accountId") long accountId,
+                       @JsonProperty("accountName") String accountName,
+                       @JsonProperty("valueDate") LocalDate valueDate,
+                       @JsonProperty("currency") String currency,
+                       @JsonProperty("debitAmount") double debitAmount,
+                       @JsonProperty("creditAmount") double creditAmount,
+                       @JsonProperty("transactionType") String transactionType,
+                       @JsonProperty("description") String description) {
         this.transactionId = transactionId;
         this.accountId = accountId;
         this.accountName = accountName;

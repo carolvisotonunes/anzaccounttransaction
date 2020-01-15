@@ -3,14 +3,10 @@ package com.anz.controller;
 import com.anz.dao.AccountDAO;
 import com.anz.model.Account;
 import com.anz.responses.AccountsResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -81,10 +77,10 @@ public class AccountController {
             Account accountIdToBeDeleted = accountDAO.getAccountByID(accountId);
             if (accountIdToBeDeleted != null) {
                 accountDAO.delete(accountId);
+                return ResponseEntity.ok().build();
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            return ResponseEntity.ok().build();
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
