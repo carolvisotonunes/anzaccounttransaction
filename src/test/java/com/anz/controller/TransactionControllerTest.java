@@ -31,15 +31,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TransactionControllerTest {
     private static final String TRANSACTIONS_URL = "http://localhost:8080/transactions";
-    TransactionDAO transactionDAO;
+    private TransactionDAO transactionDAO;
     private RestTemplate restTemplate;
-    TransactionClient transactionClient;
+    private TransactionClient transactionClient;
     private WebClient webClient;
     private AccountDAO accountDAO;
 
     @BeforeEach
     public void setUp() throws Exception {
-
         int port = 8080;
         final String baseUrl = String.format("http://localhost:%s/", port);
         webClient = WebClient.create(baseUrl);
@@ -51,7 +50,6 @@ public class TransactionControllerTest {
         dbHelper.truncate();
     }
 
-
     @Test
     public void getTransactionsWhenRequestSucceeds() throws SQLException, URISyntaxException {
         // Given
@@ -62,14 +60,15 @@ public class TransactionControllerTest {
         for (Transaction transaction : transactions) {
             transactionDAO.create(transaction);
         }
+
         // When
         ResponseEntity<TransactionsResponse> result = restTemplate.getForEntity(new URI(TRANSACTIONS_URL), TransactionsResponse.class);
+
         // Then
         assertThat(result.getStatusCodeValue(), equalTo(200));
         assertThat(result.getBody().getTransactions(), containsInAnyOrder(transactions.toArray(new Transaction[0])));
 
     }
-
 
     @Test
     public void retrieveTransactionById() throws SQLException, TransactionErrorResponse {
@@ -81,10 +80,10 @@ public class TransactionControllerTest {
         transactionDAO.create(expectedTransaction);
 
         // When
-        Transaction account = transactionClient.retrieveTransactionById(1);
+        Transaction account = transactionClient.retrieveTransactionById(1l);
 
         // Then
-        Assert.assertThat(account, equalTo(expectedTransaction));
+        assertThat(account, equalTo(expectedTransaction));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class TransactionControllerTest {
                 LocalDate.of(2019, 01, 01), "AUD", 1548.24, 0.0, "DEBIT", "desc1");
         transactionDAO.create(expectedTransaction);
 
-        assertThrows(TransactionErrorResponse.class, () -> transactionClient.retrieveTransactionById(100));
+        assertThrows(TransactionErrorResponse.class, () -> transactionClient.retrieveTransactionById(100l));
     }
 
 
@@ -109,20 +108,28 @@ public class TransactionControllerTest {
                 LocalDate.of(2019, 12, 1), "AUD", 1000);
         accountDAO.insert(insert);
 
-        Transaction insertTransaction = new Transaction(1, 1, "Bill",
+        Transaction expectedTransaction = new Transaction(1, 1, "Bill",
                 LocalDate.of(2019, 01, 01), "AUD", 1548.24, 0.0, "DEBIT", "desc1");
-        transactionDAO.create(insertTransaction);
-        Transaction transaction = new Transaction(1, 1, "Bill",
-                LocalDate.of(2019, 01, 01), "AUD", 1548.24, 0.0, "DEBIT", "desc1");
-        //then
-        Assert.assertThat(transaction, equalTo(insertTransaction));
+        // When
+        TestResponse<Transaction> response = transactionClient.addNewTransaction(expectedTransaction);
+
+        // Then
+        assertThat(response.getStatus(), equalTo(HttpStatus.CREATED));
+        assertThat(response.getBody(), equalTo(expectedTransaction));
+        assertThat(transactionDAO.getTransaction(String.valueOf(expectedTransaction.getTransactionId())), equalTo(expectedTransaction));
 
     }
 
     @Test
-    void addNewTransaction_InvalidInput() {
-        //when
-        assertThrows(TransactionErrorResponse.class, () -> transactionClient.addNewTransaction(null));
+    void addNewTransaction_InvalidInput() throws TransactionErrorResponse, SQLException {
+        Transaction expectedTransaction = new Transaction(-1, -11, null,
+                null, "AUD", 1548.24, 0.0, "DEBIT", "desc1");
+        // When
+        TestResponse<Transaction> response = transactionClient.addNewTransaction(expectedTransaction);
+
+        // Then
+        assertThat(response.getStatus(), equalTo(HttpStatus.BAD_REQUEST));
+        assertThat(transactionDAO.getAll().size(), equalTo(0));
     }
 
     @Test
@@ -136,29 +143,26 @@ public class TransactionControllerTest {
                 LocalDate.of(2019, 01, 01), "AUD", 1548.24, 0.0, "DEBIT", "desc1");
         transactionDAO.create(insertTransaction);
 
-        Transaction toBeUpdate = new Transaction(1, 1, "Bill",
+        Transaction toBeUpdated = new Transaction(1, 1, "Bill",
                 LocalDate.now(), "AUD", 1548.24, 0.0, "DEBIT", "desc1");
-        HttpStatus status = transactionClient.updateTransaction(toBeUpdate);
+        HttpStatus status = transactionClient.updateTransaction(toBeUpdated);
         //then
-        Assert.assertThat(status, equalTo(HttpStatus.OK));
+        assertThat(status, equalTo(HttpStatus.OK));
+        assertThat(transactionDAO.getTransaction(String.valueOf(toBeUpdated.getTransactionId())), equalTo(toBeUpdated));
 
     }
 
     @Test
     void updateTransaction_Not_Found() throws SQLException, TransactionErrorResponse {
-        //given
-        Account insert = new Account(1, 78541236, "Mark", "SAVINGS",
-                LocalDate.of(2019, 12, 1), "AUD", 1000);
-        accountDAO.insert(insert);
-
-        Transaction insertTransaction = new Transaction(1, 1, "Bill",
-                LocalDate.of(2019, 01, 01), "AUD", 1548.24, 0.0, "DEBIT", "desc1");
-        transactionDAO.create(insertTransaction);
-
-        Transaction toBeUpdate = new Transaction(100, 1, "Bill",
+        //Given
+        Transaction toBeUpdated = new Transaction(100, 1, "Bill",
                 LocalDate.now(), "AUD", 1548.24, 0.0, "DEBIT", "desc1");
-        HttpStatus status = transactionClient.updateTransaction(toBeUpdate);
-        Assert.assertThat(status, equalTo(HttpStatus.NOT_FOUND));
+
+        //When
+        HttpStatus status = transactionClient.updateTransaction(toBeUpdated);
+
+        assertThat(status, equalTo(HttpStatus.NOT_FOUND));
+        assertThat(transactionDAO.getAll().size(), equalTo(0));
     }
 
     @Test
@@ -175,7 +179,8 @@ public class TransactionControllerTest {
         HttpStatus status = transactionClient.deleteTransactionById(toBeDeleted.getTransactionId());
 
         //then
-        Assert.assertThat(status, equalTo(HttpStatus.OK));
+        assertThat(status, equalTo(HttpStatus.OK));
+        assertThat(transactionDAO.getAll().size(), equalTo(0));
 
     }
 
@@ -193,8 +198,7 @@ public class TransactionControllerTest {
         HttpStatus status = transactionClient.deleteTransactionById(100);
 
         //then
-        Assert.assertThat(status, equalTo(HttpStatus.NOT_FOUND));
+        assertThat(status, equalTo(HttpStatus.NOT_FOUND));
+        assertThat(transactionDAO.getAll().size(), equalTo(1));
     }
-
-
 }

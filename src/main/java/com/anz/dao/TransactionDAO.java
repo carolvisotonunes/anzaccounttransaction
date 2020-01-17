@@ -17,6 +17,7 @@ public class TransactionDAO {
 
     private BasicDataSource ds;
 
+    // FIXME: Credentials should not be in code
     public TransactionDAO() {
         ds = new BasicDataSource();
         ds.setUrl(DatabaseConstants.JDBC_URL);
@@ -32,7 +33,7 @@ public class TransactionDAO {
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction WHERE accountnumber = ?")) {
             preparedStatement.setString(1, String.valueOf(accountId));
             ResultSet resultSet = preparedStatement.executeQuery();
-            return getTransactionsFrom(resultSet);
+            return transactionsFrom(resultSet);
         }
     }
 
@@ -40,7 +41,7 @@ public class TransactionDAO {
         try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction")) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            return getTransactionsFrom(resultSet);
+            return transactionsFrom(resultSet);
         }
     }
 
@@ -90,11 +91,11 @@ public class TransactionDAO {
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM transaction WHERE transactionid = ?")) {
             preparedStatement.setString(1, transactionId);
             ResultSet resultSet = preparedStatement.executeQuery();
-            return getTransactionFrom(resultSet);
+            return transactionFrom(resultSet);
         }
     }
 
-    private Transaction getTransactionFrom(ResultSet resultSet) throws SQLException {
+    private Transaction transactionFrom(ResultSet resultSet) throws SQLException {
         Transaction transaction = null;
         while (resultSet.next()) {
             long transactionId = resultSet.getLong("transactionid");
@@ -111,7 +112,7 @@ public class TransactionDAO {
         return transaction;
     }
 
-    private List<Transaction> getTransactionsFrom(ResultSet resultSet) throws SQLException {
+    private List<Transaction> transactionsFrom(ResultSet resultSet) throws SQLException {
         List<Transaction> transactions = new ArrayList<>();
         while (resultSet.next()) {
             long transactionId = resultSet.getLong("transactionid");

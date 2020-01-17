@@ -17,6 +17,7 @@ public class AccountDAO {
 
     private BasicDataSource ds;
 
+    // FIXME: The database credentials should not be in code
     public AccountDAO() {
         ds = new BasicDataSource();
         ds.setUrl(DatabaseConstants.JDBC_URL);
@@ -31,7 +32,7 @@ public class AccountDAO {
         try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM account")) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            return getAccounts(resultSet);
+            return accountsFrom(resultSet);
         }
     }
 
@@ -45,7 +46,8 @@ public class AccountDAO {
             preparedStatement.setObject(5, account.getBalanceDate());
             preparedStatement.setString(6, account.getCurrency());
             preparedStatement.setDouble(7, account.getAvailableBalance());
-            return preparedStatement.executeUpdate();
+             return preparedStatement.executeUpdate();
+
         }
     }
 
@@ -72,17 +74,17 @@ public class AccountDAO {
         }
     }
 
-    public Account getAccountByID(Long accountId) throws SQLException {
+    public Account getAccount(Long accountId) throws SQLException {
         try (Connection conn = ds.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM account WHERE accountnumber = ?")) {
             preparedStatement.setString(1, String.valueOf(accountId));
             ResultSet resultSet = preparedStatement.executeQuery();
-            return getAccountByID(resultSet);
+            return accountFrom(resultSet);
         }
 
     }
 
-    private List<Account> getAccounts(ResultSet resultSet) throws SQLException {
+    private List<Account> accountsFrom(ResultSet resultSet) throws SQLException {
         List<Account> accounts = new ArrayList<>();
         while (resultSet.next()) {
             long accountNumber = resultSet.getLong("accountnumber");
@@ -99,7 +101,7 @@ public class AccountDAO {
         return accounts;
     }
 
-    private Account getAccountByID(ResultSet resultSet) throws SQLException {
+    private Account accountFrom(ResultSet resultSet) throws SQLException {
         Account account = null;
         while (resultSet.next()) {
             long accountNumber = resultSet.getLong("accountnumber");

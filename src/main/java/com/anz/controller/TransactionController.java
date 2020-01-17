@@ -18,7 +18,7 @@ public class TransactionController {
         this.transactionDAO = transactionDAO;
     }
 
-    @GetMapping(value = "/transactions")
+    @GetMapping("/transactions")
     public ResponseEntity<TransactionsResponse> transactions() {
         try {
             return ResponseEntity.ok(new TransactionsResponse(transactionDAO.getAll()));
@@ -28,7 +28,7 @@ public class TransactionController {
         }
     }
 
-    @GetMapping(value = "/transactions/account/{accountId}")
+    @GetMapping("/transactions/account/{accountId}")
     public ResponseEntity<TransactionsResponse> transactionsFromAccountId(@PathVariable Long accountId) {
         try {
             return ResponseEntity.ok(new TransactionsResponse(transactionDAO.getAll(accountId)));
@@ -38,12 +38,12 @@ public class TransactionController {
         }
     }
 
-    @GetMapping("/transactions/transaction/{transactionId}")
+    @GetMapping("/transactions/{transactionId}")
     public ResponseEntity<Transaction> transactionsFromTransactionId(@PathVariable String transactionId) {
         try {
-            if (transactionDAO.getTransaction(transactionId)!= null){
+            if (transactionDAO.getTransaction(transactionId) != null) {
                 return ResponseEntity.ok(transactionDAO.getTransaction(transactionId));
-            } else{
+            } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
@@ -56,8 +56,16 @@ public class TransactionController {
     @PostMapping("/transactions")
     public ResponseEntity<Transaction> newTransaction(@RequestBody Transaction transaction) {
         try {
-            transactionDAO.create(transaction);
-            return ResponseEntity.created(URI.create("http://localhost:8080/transactions/transaction/" + transaction.getTransactionId())).body(transaction);
+            if (transaction.getTransactionId() <= 0 || transaction.getAccountId() <= 0 || transaction.getAccountName() == null ||
+                    transaction.getCreditAmount() < 0 || transaction.getCurrency() == null || transaction.getDebitAmount() < 0 ||
+                    transaction.getDescription() == null || transaction.getValueDate() == null){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }else {
+                transactionDAO.create(transaction);
+                return ResponseEntity.created(
+                        URI.create("http://localhost:8080/transactions/transaction/" + transaction.getTransactionId())
+                ).body(transaction);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -70,7 +78,7 @@ public class TransactionController {
             Transaction transactionIdToBeUpdated = transactionDAO.getTransaction(String.valueOf(transaction.getTransactionId()));
             if (transactionIdToBeUpdated != null) {
                 transactionDAO.update(transaction);
-                return ResponseEntity.ok(transaction);
+                return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }

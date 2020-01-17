@@ -3,7 +3,6 @@ package com.anz.controller;
 import com.anz.dao.AccountDAO;
 import com.anz.model.Account;
 import com.anz.responses.AccountsResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.sql.SQLException;
 
-@Slf4j
 @RestController
 public class AccountController {
     private AccountDAO accountDAO;
@@ -33,8 +31,9 @@ public class AccountController {
     @GetMapping("/accounts/{accountID}")
     public ResponseEntity<Account> account(@PathVariable("accountID") Long accountId) {
         try {
-            if (accountDAO.getAccountByID(accountId) != null) {
-                return ResponseEntity.ok(accountDAO.getAccountByID(accountId));
+            Account account = accountDAO.getAccount(accountId);
+            if (account != null) {
+                return ResponseEntity.ok(accountDAO.getAccount(accountId));
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -44,12 +43,18 @@ public class AccountController {
         }
     }
 
-
     @PostMapping("/accounts")
     public ResponseEntity<Account> newAccount(@RequestBody Account account) {
         try {
-            accountDAO.insert(account);
-            return ResponseEntity.created(URI.create("http://localhost:8080/accounts/" + account.getAccountId())).body(account);
+            if (account.getAccountId() <= 0 || account.getCustomerId() <= 0 || account.getAccountName() == null || account.getAvailableBalance() < 0
+                    || account.getAccountType() == null || account.getBalanceDate() == null || account.getCurrency() == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                accountDAO.insert(account);
+                return ResponseEntity
+                        .created(URI.create("http://localhost:8080/accounts/" + account.getAccountId()))
+                        .body(account);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,14 +62,15 @@ public class AccountController {
     }
 
     @PutMapping("/accounts")
-    public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
+    public ResponseEntity<HttpStatus> updateAccount(@RequestBody Account account) {
         try {
-            Account accountIdToBeUpdated = accountDAO.getAccountByID(account.getAccountId());
+            Account accountIdToBeUpdated = accountDAO.getAccount(account.getAccountId());
             if (accountIdToBeUpdated != null) {
                 accountDAO.update(account);
-                return ResponseEntity.ok(account);
-            } else
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,7 +80,7 @@ public class AccountController {
     @DeleteMapping("/accounts/{accountID}")
     public ResponseEntity<String> deleteAccount(@PathVariable("accountID") Long accountId) {
         try {
-            Account accountIdToBeDeleted = accountDAO.getAccountByID(accountId);
+            Account accountIdToBeDeleted = accountDAO.getAccount(accountId);
             if (accountIdToBeDeleted != null) {
                 accountDAO.delete(accountId);
                 return ResponseEntity.ok().build();

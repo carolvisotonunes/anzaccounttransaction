@@ -6,7 +6,6 @@ import com.anz.dao.AccountDAO;
 import com.anz.expection.AccountErrorResponse;
 import com.anz.model.Account;
 import com.anz.responses.AccountsResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -28,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AccountControllerTest {
     private static final String ACCOUNTS_URL = "http://localhost:8080/accounts";
+    // FIXME: This should be private
     AccountClient accountClient;
     private RestTemplate restTemplate;
     private AccountDAO accountDAO;
@@ -56,8 +56,10 @@ public class AccountControllerTest {
         for (Account account : accounts) {
             accountDAO.insert(account);
         }
+
         // When
         ResponseEntity<AccountsResponse> result = restTemplate.getForEntity(new URI(ACCOUNTS_URL), AccountsResponse.class);
+
         // Then
         assertThat(result.getStatusCodeValue(), equalTo(200));
         assertThat(result.getBody().getAccounts(), containsInAnyOrder(accounts.toArray(new Account[0])));
@@ -78,92 +80,97 @@ public class AccountControllerTest {
     }
 
     @Test
-    public void retrieveAccountById_NotFound() throws SQLException {
+    public void retrieveAccountById_NotFound() throws SQLException, AccountErrorResponse {
         // Given
         Account expectedAccount = new Account(1, 78541236, "Mark", "SAVINGS",
                 LocalDate.of(2019, 7, 1), "AUD", 0);
         accountDAO.insert(expectedAccount);
 
+        // When / Then
         assertThrows(AccountErrorResponse.class, () -> accountClient.retrieveAccountById(100));
     }
 
-
     @Test
     void addNewAccount() throws SQLException, AccountErrorResponse {
-        //given
+        // Given
         Account expectedAccount = new Account(1, 78541236, "Mark", "SAVINGS",
                 LocalDate.of(2019, 7, 1), "AUD", 0);
-        //when
-        Account account = accountClient.addNewAccount(new Account(1, 78541236, "Mark", "SAVINGS",
-                LocalDate.of(2019, 7, 1), "AUD", 0));
-        //then
-        assertThat(account, equalTo(expectedAccount));
-
+        // When
+        TestResponse<Account> response = accountClient.addNewAccount(expectedAccount);
+        // Then
+        assertThat(response.getStatus(), equalTo(HttpStatus.CREATED));
+        assertThat(response.getBody(), equalTo(expectedAccount));
+        assertThat(accountDAO.getAccount(expectedAccount.getAccountId()), equalTo(expectedAccount));
     }
 
     @Test
-    void addNewAccount_InvalidInput() {
-        //when
-        Assertions.assertThrows(AccountErrorResponse.class, () -> accountClient.addNewAccount(null));
+    void addNewAccount_InvalidInput() throws AccountErrorResponse, SQLException {
+        Account account = new Account(-1, -1, null, null, null, null, -1);
+        // When
+        TestResponse<Account> response = accountClient.addNewAccount(account);
+        // Then
+        assertThat(response.getStatus(), equalTo(HttpStatus.BAD_REQUEST));
+        assertThat(accountDAO.getAll().size(), equalTo(0));
     }
 
     @Test
     void updateAccount() throws SQLException, AccountErrorResponse {
-        //given
+        // Given
         Account insert = new Account(2, 78541236, "Mark", "SAVINGS",
                 LocalDate.of(2019, 12, 1), "AUD", 1000);
         accountDAO.insert(insert);
 
-        Account toBeUpdate = new Account(2, 78541236, "Mark", "SAVINGS",
+        Account toBeUpdated = new Account(2, 78541236, "Mark", "SAVINGS",
                 LocalDate.now(), "AUD", 0);
-        //when
-        HttpStatus status = accountClient.updateAccount(toBeUpdate);
-        //then
-        assertThat(status, equalTo(HttpStatus.OK));
+        // When
+        HttpStatus status = accountClient.updateAccount(toBeUpdated);
 
+        // Then
+        assertThat(status, equalTo(HttpStatus.OK));
+        assertThat(accountDAO.getAccount(toBeUpdated.getAccountId()), equalTo(toBeUpdated));
     }
 
     @Test
     void updateAccount_Not_Found() throws SQLException, AccountErrorResponse {
-        //given
-        Account insert = new Account(2, 78541236, "Mark", "SAVINGS",
-                LocalDate.of(2019, 12, 1), "AUD", 1000);
-        accountDAO.insert(insert);
-
-        Account toBeUpdate = new Account(100, 78541236, "Mark", "SAVINGS",
+        //Given
+        Account toBeUpdated = new Account(100, 78541236, "Mark", "SAVINGS",
                 LocalDate.of(2020, 1, 4), "AUD", 0);
-        //when
-        HttpStatus status = accountClient.updateAccount(toBeUpdate);
+        // When
+        HttpStatus status = accountClient.updateAccount(toBeUpdated);
+
+        // Then
         assertThat(status, equalTo(HttpStatus.NOT_FOUND));
+        assertThat(accountDAO.getAll().size(), equalTo(0));
     }
 
     @Test
     void deleteAccount() throws SQLException, AccountErrorResponse {
-
-        //given
+        // Given
         Account toBeDeleted = new Account(1, 78541236, "Mark", "SAVINGS",
                 LocalDate.of(2019, 7, 1), "AUD", 0);
         accountDAO.insert(toBeDeleted);
-        //when
+
+        // When
         HttpStatus status = accountClient.deleteAccountById(toBeDeleted.getAccountId());
 
-        //then
+        // Then
         assertThat(status, equalTo(HttpStatus.OK));
-
+        assertThat(accountDAO.getAll().size(), equalTo(0));
     }
 
     @Test
     void deleteAccount_notFound() throws SQLException, AccountErrorResponse {
-        //given
-        Account toBeDeleted = new Account(1, 78541236, "Mark", "SAVINGS",
+        // Given
+        Account account = new Account(1, 78541236, "Mark", "SAVINGS",
                 LocalDate.of(2019, 7, 1), "AUD", 0);
-        accountDAO.insert(toBeDeleted);
+        accountDAO.insert(account);
 
-        //when
+        // When
         HttpStatus status = accountClient.deleteAccountById(100);
 
-        //then
+        // Then
         assertThat(status, equalTo(HttpStatus.NOT_FOUND));
+        assertThat(accountDAO.getAll().size(), equalTo(1));
     }
 }
 
