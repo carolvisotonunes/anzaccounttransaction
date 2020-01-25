@@ -1,5 +1,7 @@
 package com.anz.model;
 
+import com.anz.enums.AccountTypeEnum;
+import com.anz.enums.CurrencyEnum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -11,9 +13,9 @@ public class Account {
     private final long accountId;
     private final long customerId;
     private final String accountName;
-    private final String accountType;
+    private final AccountTypeEnum accountType;
     private final LocalDate balanceDate;
-    private final String currency;
+    private final CurrencyEnum currency;
     private final double availableBalance;
 
     @JsonCreator
@@ -27,9 +29,9 @@ public class Account {
         this.accountId = accountId;
         this.customerId = customerId;
         this.accountName = accountName;
-        this.accountType = accountType;
+        this.accountType = AccountTypeEnum.valueOf(accountType);
         this.balanceDate = balanceDate;
-        this.currency = currency;
+        this.currency = CurrencyEnum.valueOf(currency);
         this.availableBalance = availableBalance;
     }
 
@@ -45,7 +47,7 @@ public class Account {
         return accountName;
     }
 
-    public String getAccountType() {
+    public AccountTypeEnum getAccountType() {
         return accountType;
     }
 
@@ -53,7 +55,7 @@ public class Account {
         return balanceDate;
     }
 
-    public String getCurrency() {
+    public CurrencyEnum getCurrency() {
         return currency;
     }
 
@@ -61,7 +63,6 @@ public class Account {
         return availableBalance;
     }
 
-    // TODO: Review equals and hashcode of Java
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

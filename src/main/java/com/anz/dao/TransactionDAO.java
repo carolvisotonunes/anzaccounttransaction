@@ -52,10 +52,10 @@ public class TransactionDAO {
             preparedStatement.setLong(2, transaction.getAccountId());
             preparedStatement.setString(3, transaction.getAccountName());
             preparedStatement.setObject(4, transaction.getValueDate());
-            preparedStatement.setString(5, transaction.getCurrency());
+            preparedStatement.setString(5, transaction.getCurrency().toString());
             preparedStatement.setDouble(6, transaction.getDebitAmount());
             preparedStatement.setDouble(7, transaction.getCreditAmount());
-            preparedStatement.setString(8, transaction.getTransactionType());
+            preparedStatement.setString(8, transaction.getTransactionType().toString());
             preparedStatement.setString(9, transaction.getDescription());
             preparedStatement.executeUpdate();
         }
@@ -67,10 +67,10 @@ public class TransactionDAO {
             preparedStatement.setLong(1, transaction.getAccountId());
             preparedStatement.setString(2, transaction.getAccountName());
             preparedStatement.setObject(3, transaction.getValueDate());
-            preparedStatement.setString(4, transaction.getCurrency());
+            preparedStatement.setString(4, transaction.getCurrency().toString());
             preparedStatement.setDouble(5, transaction.getDebitAmount());
             preparedStatement.setDouble(6, transaction.getCreditAmount());
-            preparedStatement.setString(7, transaction.getTransactionType());
+            preparedStatement.setString(7, transaction.getTransactionType().toString());
             preparedStatement.setString(8, transaction.getDescription());
             preparedStatement.setString(9, String.valueOf(transaction.getTransactionId()));
             preparedStatement.executeUpdate();

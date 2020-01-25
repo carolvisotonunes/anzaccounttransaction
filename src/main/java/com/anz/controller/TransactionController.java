@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class TransactionController {
@@ -19,7 +21,7 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions")
-    public ResponseEntity<TransactionsResponse> transactions() {
+    public ResponseEntity <TransactionsResponse> transactions() {
         try {
             return ResponseEntity.ok(new TransactionsResponse(transactionDAO.getAll()));
         } catch (SQLException e) {
@@ -56,6 +58,7 @@ public class TransactionController {
     @PostMapping("/transactions")
     public ResponseEntity<Transaction> newTransaction(@RequestBody Transaction transaction) {
         try {
+            // FIXME: Extract validator as accounts
             if (transaction.getTransactionId() <= 0 || transaction.getAccountId() <= 0 || transaction.getAccountName() == null ||
                     transaction.getCreditAmount() < 0 || transaction.getCurrency() == null || transaction.getDebitAmount() < 0 ||
                     transaction.getDescription() == null || transaction.getValueDate() == null){
@@ -75,6 +78,7 @@ public class TransactionController {
     @PutMapping("/transactions")
     public ResponseEntity<Transaction> updateTransaction(@RequestBody Transaction transaction) {
         try {
+            // FIXME: Validate the transaction
             Transaction transactionIdToBeUpdated = transactionDAO.getTransaction(String.valueOf(transaction.getTransactionId()));
             if (transactionIdToBeUpdated != null) {
                 transactionDAO.update(transaction);

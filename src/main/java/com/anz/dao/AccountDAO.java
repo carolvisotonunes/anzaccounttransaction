@@ -42,9 +42,9 @@ public class AccountDAO {
             preparedStatement.setLong(1, account.getAccountId());
             preparedStatement.setLong(2, account.getCustomerId());
             preparedStatement.setString(3, account.getAccountName());
-            preparedStatement.setString(4, account.getAccountType());
+            preparedStatement.setString(4, account.getAccountType().toString());
             preparedStatement.setObject(5, account.getBalanceDate());
-            preparedStatement.setString(6, account.getCurrency());
+            preparedStatement.setString(6, account.getCurrency().toString());
             preparedStatement.setDouble(7, account.getAvailableBalance());
              return preparedStatement.executeUpdate();
 
@@ -57,9 +57,9 @@ public class AccountDAO {
                      "WHERE accountnumber=?")) {
             preparedStatement.setLong(1, account.getCustomerId());
             preparedStatement.setString(2, account.getAccountName());
-            preparedStatement.setString(3, account.getAccountType());
+            preparedStatement.setString(3, account.getAccountType().toString());
             preparedStatement.setObject(4, account.getBalanceDate());
-            preparedStatement.setString(5, account.getCurrency());
+            preparedStatement.setString(5, account.getCurrency().toString());
             preparedStatement.setDouble(6, account.getAvailableBalance());
             preparedStatement.setString(7, String.valueOf(account.getAccountId()));
             preparedStatement.executeUpdate();

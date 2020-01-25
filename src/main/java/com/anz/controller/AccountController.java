@@ -3,12 +3,14 @@ package com.anz.controller;
 import com.anz.dao.AccountDAO;
 import com.anz.model.Account;
 import com.anz.responses.AccountsResponse;
+import com.anz.validators.AccountValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 public class AccountController {
@@ -45,16 +47,38 @@ public class AccountController {
 
     @PostMapping("/accounts")
     public ResponseEntity<Account> newAccount(@RequestBody Account account) {
+        AccountValidator accountValidator = new AccountValidator();
         try {
-            if (account.getAccountId() <= 0 || account.getCustomerId() <= 0 || account.getAccountName() == null || account.getAvailableBalance() < 0
-                    || account.getAccountType() == null || account.getBalanceDate() == null || account.getCurrency() == null) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else {
-                accountDAO.insert(account);
-                return ResponseEntity
-                        .created(URI.create("http://localhost:8080/accounts/" + account.getAccountId()))
-                        .body(account);
-            }
+            //AccountValidatorErrors errors =  accountValidatorErrors.validate(account);
+            // FIXME: Put validation in another class and do a unit test
+            // Tem que por numa classe
+            // AccountValidationErrors errors = accountValidator.validate(account);
+            // test happy path -> no errors found (null)
+            // accountId -> negative, null, 0
+            // customerId -> same as accountId
+            // accountName -> null, "", "     "
+            // availableBalance -> negative
+            // accountType -> null, "", "  ", "invalidAccountType"
+            // balanceDate -> null
+            // currency -> null, "", "    ", "invalidCurrencyType"
+
+            /**
+             * {"errors": [
+             *   {"accountId": ["must not be null"]},
+             *   {"customerId": ["must not be empty"]},
+             *   {"availableBalance": ["must be positive"]},
+             *   ...
+             * ]}
+             */
+
+//            if (errors == null) {
+            accountDAO.insert(account);
+            return ResponseEntity
+                    .created(URI.create("http://localhost:8080/accounts/" + account.getAccountId()))
+                    .body(account);
+//            } else {
+//                return ResponseEntity.badRequest().build();
+//            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,7 +87,10 @@ public class AccountController {
 
     @PutMapping("/accounts")
     public ResponseEntity<HttpStatus> updateAccount(@RequestBody Account account) {
+        AccountValidator accountValidator = new AccountValidator();
         try {
+//             AccountValidatorErrors errors = accountValidatorErrors.validate(account);
+//           if (errors == null) {
             Account accountIdToBeUpdated = accountDAO.getAccount(account.getAccountId());
             if (accountIdToBeUpdated != null) {
                 accountDAO.update(account);
@@ -71,6 +98,9 @@ public class AccountController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+//            } else {
+//                return ResponseEntity.badRequest().build();
+//            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

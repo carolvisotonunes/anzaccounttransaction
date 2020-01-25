@@ -1,5 +1,7 @@
 package com.anz.model;
 
+import com.anz.enums.CurrencyEnum;
+import com.anz.enums.TransactionTypeEnum;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -12,10 +14,10 @@ public class Transaction {
     private final long accountId;
     private final String accountName;
     private final LocalDate valueDate;
-    private final String currency;
+    private final CurrencyEnum currency;
     private final double debitAmount;
     private final double creditAmount;
-    private final String transactionType;
+    private final TransactionTypeEnum transactionType;
     private final String description;
 
     @JsonCreator
@@ -32,10 +34,10 @@ public class Transaction {
         this.accountId = accountId;
         this.accountName = accountName;
         this.valueDate = valueDate;
-        this.currency = currency;
+        this.currency = CurrencyEnum.valueOf(currency);
         this.debitAmount = debitAmount;
         this.creditAmount = creditAmount;
-        this.transactionType = transactionType;
+        this.transactionType = TransactionTypeEnum.valueOf(transactionType);
         this.description = description;
     }
 
@@ -55,7 +57,7 @@ public class Transaction {
         return valueDate;
     }
 
-    public String getCurrency() {
+    public CurrencyEnum getCurrency() {
         return currency;
     }
 
@@ -67,7 +69,7 @@ public class Transaction {
         return creditAmount;
     }
 
-    public String getTransactionType() {
+    public TransactionTypeEnum getTransactionType() {
         return transactionType;
     }
 
