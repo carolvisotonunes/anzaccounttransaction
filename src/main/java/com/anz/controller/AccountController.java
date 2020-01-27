@@ -50,27 +50,6 @@ public class AccountController {
         AccountValidator accountValidator = new AccountValidator();
         try {
             List errors = accountValidator.validate(account);
-            // FIXME: Put validation in another class and do a unit test
-            // Tem que por numa classe
-            // AccountValidationErrors errors = accountValidator.validate(account);
-            // test happy path -> no errors found (null)
-            // accountId -> negative, null, 0
-            // customerId -> same as accountId
-            // accountName -> null, "", "     "
-            // availableBalance -> negative
-            // accountType -> null, "", "  ", "invalidAccountType"
-            // balanceDate -> null
-            // currency -> null, "", "    ", "invalidCurrencyType"
-
-            /**
-             * {"errors": [
-             *   {"accountId": ["must not be null"]},
-             *   {"customerId": ["must not be empty"]},
-             *   {"availableBalance": ["must be positive"]},
-             *   ...
-             * ]}
-             */
-
             if (errors.size() == 0) {
                 accountDAO.insert(account);
                 return ResponseEntity

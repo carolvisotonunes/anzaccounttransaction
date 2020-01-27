@@ -113,9 +113,6 @@ public class TransactionControllerTest {
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
                 LocalDate.of(2019, 01, 01),
                 CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
-        transactionDAO.create(expectedTransaction);
-
-
         TestResponse<Transaction> response = transactionClient.addNewTransaction(expectedTransaction);
 
         // Then
