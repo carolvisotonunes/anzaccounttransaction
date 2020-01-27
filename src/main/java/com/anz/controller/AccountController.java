@@ -49,7 +49,7 @@ public class AccountController {
     public ResponseEntity<Account> newAccount(@RequestBody Account account) {
         AccountValidator accountValidator = new AccountValidator();
         try {
-            //AccountValidatorErrors errors =  accountValidatorErrors.validate(account);
+            List errors = accountValidator.validate(account);
             // FIXME: Put validation in another class and do a unit test
             // Tem que por numa classe
             // AccountValidationErrors errors = accountValidator.validate(account);
@@ -71,14 +71,14 @@ public class AccountController {
              * ]}
              */
 
-//            if (errors == null) {
-            accountDAO.insert(account);
-            return ResponseEntity
-                    .created(URI.create("http://localhost:8080/accounts/" + account.getAccountId()))
-                    .body(account);
-//            } else {
-//                return ResponseEntity.badRequest().build();
-//            }
+            if (errors.size() == 0) {
+                accountDAO.insert(account);
+                return ResponseEntity
+                        .created(URI.create("http://localhost:8080/accounts/" + account.getAccountId()))
+                        .body(account);
+            } else {
+                return ResponseEntity.badRequest().body(account);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -89,18 +89,18 @@ public class AccountController {
     public ResponseEntity<HttpStatus> updateAccount(@RequestBody Account account) {
         AccountValidator accountValidator = new AccountValidator();
         try {
-//             AccountValidatorErrors errors = accountValidatorErrors.validate(account);
-//           if (errors == null) {
-            Account accountIdToBeUpdated = accountDAO.getAccount(account.getAccountId());
-            if (accountIdToBeUpdated != null) {
-                accountDAO.update(account);
-                return new ResponseEntity<>(HttpStatus.OK);
+            List errors = accountValidator.validate(account);
+            if (errors.size() == 0) {
+                Account accountIdToBeUpdated = accountDAO.getAccount(account.getAccountId());
+                if (accountIdToBeUpdated != null) {
+                    accountDAO.update(account);
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
             } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return ResponseEntity.badRequest().build();
             }
-//            } else {
-//                return ResponseEntity.badRequest().build();
-//            }
         } catch (SQLException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

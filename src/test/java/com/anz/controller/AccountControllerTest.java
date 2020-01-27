@@ -90,7 +90,8 @@ public class AccountControllerTest {
     @Test
     void addNewAccount() throws SQLException {
         // Given
-        Account expectedAccount = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0);
+        Account expectedAccount = new Account(1, 1, "Mark", AccountTypeEnum.SAVINGS.toString(),
+                LocalDate.now(), CurrencyEnum.AUD.toString(), 0);
         // When
         TestResponse<Account> response = accountClient.addNewAccount(expectedAccount);
         // Then
