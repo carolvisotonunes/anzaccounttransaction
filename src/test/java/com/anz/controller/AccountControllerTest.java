@@ -42,9 +42,9 @@ public class AccountControllerTest {
     public void returnsAccountsWhenRequestSucceeds() throws URISyntaxException, SQLException {
         // Given
         List<Account> accounts = Arrays.asList(
-                new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0),
-                new Account(2, 78541236, "Tim", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 2), CurrencyEnum.AUD.toString(), 0),
-                new Account(3, 88542169, "Mary", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 3), CurrencyEnum.AUD.toString(), 0)
+                new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0),
+                new Account(2, 78541236, "Tim", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 2), CurrencyEnum.AUD, 0),
+                new Account(3, 88542169, "Mary", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 3), CurrencyEnum.AUD, 0)
         );
         for (Account account : accounts) {
             accountDAO.insert(account);
@@ -62,7 +62,7 @@ public class AccountControllerTest {
     @Test
     public void retrieveAccountById() throws SQLException {
         // Given
-        Account expectedAccount = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0);
+        Account expectedAccount = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(expectedAccount);
 
         // When
@@ -78,7 +78,7 @@ public class AccountControllerTest {
     @Test
     public void retrieveAccountById_NotFound() throws SQLException {
         // Given
-        Account expectedAccount = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0);
+        Account expectedAccount = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
 
         // When
         TestResponse<Account> response = accountClient.retrieveAccountById(100);
@@ -90,8 +90,8 @@ public class AccountControllerTest {
     @Test
     void addNewAccount() throws SQLException {
         // Given
-        Account expectedAccount = new Account(1, 1, "Mark", AccountTypeEnum.SAVINGS.toString(),
-                LocalDate.now(), CurrencyEnum.AUD.toString(), 0);
+        Account expectedAccount = new Account(1, 1, "Mark", AccountTypeEnum.SAVINGS,
+                LocalDate.now(), CurrencyEnum.AUD, 0);
         // When
         TestResponse<Account> response = accountClient.addNewAccount(expectedAccount);
         // Then
@@ -102,8 +102,8 @@ public class AccountControllerTest {
 
     @Test
     void addNewAccount_InvalidInput() throws SQLException {
-        Account account = new Account(-1, -1, null, AccountTypeEnum.SAVINGS.toString(),
-                null, CurrencyEnum.AUD.toString(), -1);
+        Account account = new Account(-1, -1, null, AccountTypeEnum.SAVINGS,
+                null, CurrencyEnum.AUD, -1);
         // When
         TestResponse<Account> response = accountClient.addNewAccount(account);
         // Then
@@ -114,10 +114,10 @@ public class AccountControllerTest {
     @Test
     void updateAccount() throws SQLException {
         // Given
-        Account insert = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0);
+        Account insert = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(insert);
 
-        Account toBeUpdated = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.now(), CurrencyEnum.AUD.toString(), 0);
+        Account toBeUpdated = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.now(), CurrencyEnum.AUD, 0);
         // When
         HttpStatus status = accountClient.updateAccount(toBeUpdated);
 
@@ -129,7 +129,7 @@ public class AccountControllerTest {
     @Test
     void updateAccount_Not_Found() throws SQLException {
         //Given
-        Account toBeUpdated = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0);
+        Account toBeUpdated = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         // When
         HttpStatus status = accountClient.updateAccount(toBeUpdated);
 
@@ -141,7 +141,7 @@ public class AccountControllerTest {
     @Test
     void deleteAccount() throws SQLException {
         // Given
-        Account toBeDeleted = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0);
+        Account toBeDeleted = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(toBeDeleted);
 
         // When
@@ -155,7 +155,7 @@ public class AccountControllerTest {
     @Test
     void deleteAccount_notFound() throws SQLException {
         // Given
-        Account account = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS.toString(), LocalDate.of(2019, 7, 1), CurrencyEnum.AUD.toString(), 0);
+        Account account = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(account);
 
         // When

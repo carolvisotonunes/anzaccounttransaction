@@ -14,9 +14,9 @@ public class AccountValidator {
         validateAccountId(account.getAccountId(), errors);
         validateCustomerId(account.getCustomerId(), errors);
         validateAccountName(account.getAccountName(), errors);
-        //validateAccountType(account.getAccountType(), errors);
+        validateAccountType(account.getAccountType(), errors);
         validateDate(account.getBalanceDate(), errors);
-        //validateCurrency(account.getCurrency(), errors);
+        validateCurrency(account.getCurrency(), errors);
         validateAvailableBalance(account.getAvailableBalance(), errors);
         return errors;
     }
@@ -42,11 +42,10 @@ public class AccountValidator {
     }
 
     public void validateAccountType(AccountTypeEnum accountType, List<ValidationError> errors) {
-        if (accountType.name() != "SAVINGS" || accountType.name() != "CURRENT") {
-            errors.add(new ValidationError("accountType", "Account Type values must be Savings or Current"));
+        if (accountType.name().trim().isEmpty()){
+            errors.add(new ValidationError("accountType", "Account Type values must be Savings/Current"));
         }
     }
-
     public void validateDate(LocalDate balanceDate, List<ValidationError> errors) {
         if (balanceDate == null) {
             errors.add(new ValidationError("balanceDate", "Balance Date must not be null"));
@@ -54,8 +53,8 @@ public class AccountValidator {
     }
 
     public void validateCurrency(CurrencyEnum currency, List<ValidationError> errors) {
-        if (currency.name() != "SGD" || currency.name() != "AUD") {
-            errors.add(new ValidationError("accountType", "Currency values must be SGD or AUD"));
+        if (currency.name().trim().isEmpty()) {
+            errors.add(new ValidationError("accountType", "Currency values must be SGD / AUD"));
         }
     }
 

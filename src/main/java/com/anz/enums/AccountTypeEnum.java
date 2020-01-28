@@ -1,6 +1,6 @@
 package com.anz.enums;
 
-public enum AccountTypeEnum {
+ public enum AccountTypeEnum {
     SAVINGS("Savings"), CURRENT("Current");
 
     private String value;
@@ -12,4 +12,11 @@ public enum AccountTypeEnum {
     public String getValue() {
         return value;
     }
-}
+
+     @Override
+     public String toString() {
+         return "AccountTypeEnum{" +
+                 "value='" + value + '\'' +
+                 '}';
+     }
+ }

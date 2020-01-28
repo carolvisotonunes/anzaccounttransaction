@@ -22,16 +22,16 @@ public class Account {
     public Account(@JsonProperty("accountId") long accountId,
                    @JsonProperty("customerId") long customerId,
                    @JsonProperty("accountName") String accountName,
-                   @JsonProperty("accountType") String accountType,
+                   @JsonProperty("accountType") AccountTypeEnum accountType,
                    @JsonProperty("balanceDate") LocalDate balanceDate,
-                   @JsonProperty("currency") String currency,
+                   @JsonProperty("currency") CurrencyEnum currency,
                    @JsonProperty("availableBalance") double availableBalance) {
         this.accountId = accountId;
         this.customerId = customerId;
         this.accountName = accountName;
-        this.accountType = AccountTypeEnum.valueOf(accountType);
+        this.accountType = accountType;
         this.balanceDate = balanceDate;
-        this.currency = CurrencyEnum.valueOf(currency);
+        this.currency = currency;
         this.availableBalance = availableBalance;
     }
 

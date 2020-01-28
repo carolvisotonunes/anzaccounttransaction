@@ -68,8 +68,8 @@ public class TransactionControllerTest {
     @Test
     public void retrieveTransactionById() throws SQLException {
         // Given
-        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS.toString(),
-                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD.toString(), 1000);
+        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
+                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
         accountDAO.insert(insert);
 
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
@@ -88,8 +88,8 @@ public class TransactionControllerTest {
     @Test
     public void retrieveTransactionById_NotFound() throws SQLException {
         // Given
-        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS.toString(),
-                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD.toString(), 1000);
+        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
+                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
         accountDAO.insert(insert);
 
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
@@ -107,8 +107,8 @@ public class TransactionControllerTest {
     @Test
     void addNewTransaction() throws SQLException {
         // Given
-        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS.toString(),
-                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD.toString(), 1000);
+        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
+                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
         accountDAO.insert(insert);
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
                 LocalDate.of(2019, 01, 01),
@@ -138,8 +138,8 @@ public class TransactionControllerTest {
     @Test
     void updateTransaction() throws SQLException {
         //Given
-        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS.toString(),
-                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD.toString(), 1000);
+        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
+                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
         accountDAO.insert(insert);
 
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
@@ -173,8 +173,8 @@ public class TransactionControllerTest {
 
     @Test
     void deleteTransaction() throws SQLException {
-        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS.toString(),
-                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD.toString(), 1000);
+        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
+                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
         accountDAO.insert(insert);
 
         Transaction toBeDeleted = new Transaction(1, 1, "Bill",
@@ -194,8 +194,8 @@ public class TransactionControllerTest {
     @Test
     void deleteTransaction_notFound() throws SQLException {
         //given
-        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS.toString(),
-                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD.toString(), 1000);
+        Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
+                LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
         accountDAO.update(insert);
 
         Transaction toBeDeleted = new Transaction(1, 1, "Bill",

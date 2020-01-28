@@ -1,5 +1,7 @@
 package com.anz.dao;
 
+import com.anz.enums.AccountTypeEnum;
+import com.anz.enums.CurrencyEnum;
 import com.anz.model.Account;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.stereotype.Repository;
@@ -42,7 +44,7 @@ public class AccountDAO {
             preparedStatement.setLong(1, account.getAccountId());
             preparedStatement.setLong(2, account.getCustomerId());
             preparedStatement.setString(3, account.getAccountName());
-            preparedStatement.setString(4, account.getAccountType().toString());
+            preparedStatement.setString(4, account.getAccountType().name());
             preparedStatement.setObject(5, account.getBalanceDate());
             preparedStatement.setString(6, account.getCurrency().toString());
             preparedStatement.setDouble(7, account.getAvailableBalance());
@@ -57,9 +59,9 @@ public class AccountDAO {
                      "WHERE accountnumber=?")) {
             preparedStatement.setLong(1, account.getCustomerId());
             preparedStatement.setString(2, account.getAccountName());
-            preparedStatement.setString(3, account.getAccountType().toString());
+            preparedStatement.setString(3, account.getAccountType().name());
             preparedStatement.setObject(4, account.getBalanceDate());
-            preparedStatement.setString(5, account.getCurrency().toString());
+            preparedStatement.setString(5, account.getCurrency().name());
             preparedStatement.setDouble(6, account.getAvailableBalance());
             preparedStatement.setString(7, String.valueOf(account.getAccountId()));
             preparedStatement.executeUpdate();
@@ -90,9 +92,9 @@ public class AccountDAO {
             long accountNumber = resultSet.getLong("accountnumber");
             long customerId = resultSet.getLong("customerid");
             String accountName = resultSet.getString("accountname");
-            String accountType = resultSet.getString("accounttype");
+            AccountTypeEnum accountType = AccountTypeEnum.valueOf(resultSet.getString("accounttype"));
             LocalDate balanceDate = resultSet.getDate("balancedate").toLocalDate();
-            String currency = resultSet.getString("currency");
+            CurrencyEnum currency = CurrencyEnum.valueOf(resultSet.getString("currency"));
             double availableBalance = resultSet.getDouble("availablebalance");
             Account account = new Account(accountNumber, customerId, accountName, accountType,
                     balanceDate, currency, availableBalance);
@@ -107,9 +109,9 @@ public class AccountDAO {
             long accountNumber = resultSet.getLong("accountnumber");
             long customerId = resultSet.getLong("customerid");
             String accountName = resultSet.getString("accountname");
-            String accountType = resultSet.getString("accounttype");
+            AccountTypeEnum accountType = AccountTypeEnum.valueOf(resultSet.getString("accounttype"));
             LocalDate balanceDate = resultSet.getDate("balancedate").toLocalDate();
-            String currency = resultSet.getString("currency");
+            CurrencyEnum currency = CurrencyEnum.valueOf(resultSet.getString("currency"));
             double availableBalance = resultSet.getDouble("availablebalance");
             account = new Account(accountNumber, customerId, accountName, accountType,
                     balanceDate, currency, availableBalance);

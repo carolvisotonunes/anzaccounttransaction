@@ -26,9 +26,9 @@ public class AccountValidatorTest {
                 1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.emptyList()));
@@ -40,9 +40,9 @@ public class AccountValidatorTest {
                 1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.emptyList()));
@@ -54,9 +54,9 @@ public class AccountValidatorTest {
                 1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.emptyList()));
@@ -68,9 +68,9 @@ public class AccountValidatorTest {
                 1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.emptyList()));
@@ -82,9 +82,9 @@ public class AccountValidatorTest {
                 1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.emptyList()));
@@ -96,9 +96,9 @@ public class AccountValidatorTest {
                 1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.emptyList()));
@@ -110,9 +110,9 @@ public class AccountValidatorTest {
                 1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.emptyList()));
@@ -124,9 +124,9 @@ public class AccountValidatorTest {
                 -1,
                 78541236,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.singletonList(new ValidationError("accountId", "Account Id must be positive"))));
@@ -138,9 +138,9 @@ public class AccountValidatorTest {
                 1,
                 -1,
                 "Mark",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.singletonList(new ValidationError("customerId", "Customer Id must not be a positive number"))));
@@ -152,13 +152,14 @@ public class AccountValidatorTest {
                 1,
                 1,
                 " ",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 7, 1),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.singletonList(new ValidationError("accountName", "Account Name must not be empty"))));
     }
+
 
     @Test
     void shouldReturnErrorWhenDateIsNull() {
@@ -166,9 +167,9 @@ public class AccountValidatorTest {
                 1,
                 1,
                 "Tim",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 null,
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 0
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.singletonList(new ValidationError("balanceDate", "Balance Date must not be null"))));
@@ -180,9 +181,9 @@ public class AccountValidatorTest {
                 1,
                 1,
                 "Tim",
-                AccountTypeEnum.SAVINGS.name(),
+                AccountTypeEnum.SAVINGS,
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 -1
         );
         assertThat(accountValidator.validate(account), equalTo(Collections.singletonList(new ValidationError("availableBalance", "Available Balance must not be a positive value"))));
