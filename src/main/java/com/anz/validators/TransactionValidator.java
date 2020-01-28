@@ -25,8 +25,6 @@ public class TransactionValidator {
     }
 
 
-
-
     private void validateTransactionId(long transactionId, List<ValidationError> errors) {
         if (transactionId < 0) {
             errors.add(new ValidationError("transactionId", "Transaction Id must be a positive number"));
@@ -34,47 +32,53 @@ public class TransactionValidator {
     }
 
     private void validateAccountId(long accountId, List<ValidationError> errors) {
-        if (accountId < 0){
+        if (accountId < 0) {
             errors.add(new ValidationError("accountId", "Account Id must be a positive number"));
         }
     }
 
     private void validateAccountName(String accountName, List<ValidationError> errors) {
-        if (accountName == null){
+        if (accountName == null) {
             errors.add(new ValidationError("accountName", "Account Name must not be null"));
-        } else if (accountName.isEmpty()){
+        } else if (accountName.isEmpty()) {
             errors.add(new ValidationError("accountName", "Account Name must not be empty"));
         }
     }
 
     private void validateDate(LocalDate valueDate, List<ValidationError> errors) {
-        if (valueDate == null){
+        if (valueDate == null) {
             errors.add(new ValidationError("valueDate", "Value Date must not be null"));
         }
     }
 
+    public void validateTransactionType(TransactionTypeEnum transactionTypeEnum, List<ValidationError> errors) {
+        if (transactionTypeEnum.name().trim().isEmpty()) {
+            errors.add(new ValidationError("transactionType", "Transaction Type values must be Credit/Debit"));
+        }
+    }
+
     private void validateCurrency(CurrencyEnum currency, List<ValidationError> errors) {
+        if (currency.name().trim().isEmpty()) {
+            errors.add(new ValidationError("accountType", "Currency values must be SGD / AUD"));
+        }
     }
 
     private void validateDebitAmount(double debitAmount, List<ValidationError> errors) {
-        if (debitAmount < 0){
+        if (debitAmount < 0) {
             errors.add(new ValidationError("debitAmount", "Debit Amount must not be a negative value"));
         }
     }
 
     private void validateCreditAmount(double creditAmount, List<ValidationError> errors) {
-        if (creditAmount < 0){
+        if (creditAmount < 0) {
             errors.add(new ValidationError("creditAmount", "Credit Amount must not be a negative value"));
         }
     }
 
-    private void validateTransactionType(TransactionTypeEnum transactionType, List<ValidationError> errors) {
-    }
-
     private void validateDescription(String description, List<ValidationError> errors) {
-        if (description == null){
+        if (description == null) {
             errors.add(new ValidationError("description", "Description must not be null"));
-        } else if (description.trim().isEmpty()){
+        } else if (description.trim().isEmpty()) {
             errors.add(new ValidationError("description", "Description must not be empty"));
         }
     }

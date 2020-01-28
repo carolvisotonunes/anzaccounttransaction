@@ -1,5 +1,7 @@
 package com.anz.dao;
 
+import com.anz.enums.CurrencyEnum;
+import com.anz.enums.TransactionTypeEnum;
 import com.anz.model.Transaction;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.stereotype.Repository;
@@ -52,10 +54,10 @@ public class TransactionDAO {
             preparedStatement.setLong(2, transaction.getAccountId());
             preparedStatement.setString(3, transaction.getAccountName());
             preparedStatement.setObject(4, transaction.getValueDate());
-            preparedStatement.setString(5, transaction.getCurrency().toString());
+            preparedStatement.setString(5, transaction.getCurrency().name());
             preparedStatement.setDouble(6, transaction.getDebitAmount());
             preparedStatement.setDouble(7, transaction.getCreditAmount());
-            preparedStatement.setString(8, transaction.getTransactionType().toString());
+            preparedStatement.setString(8, transaction.getTransactionType().name());
             preparedStatement.setString(9, transaction.getDescription());
             preparedStatement.executeUpdate();
         }
@@ -67,10 +69,10 @@ public class TransactionDAO {
             preparedStatement.setLong(1, transaction.getAccountId());
             preparedStatement.setString(2, transaction.getAccountName());
             preparedStatement.setObject(3, transaction.getValueDate());
-            preparedStatement.setString(4, transaction.getCurrency().toString());
+            preparedStatement.setString(4, transaction.getCurrency().name());
             preparedStatement.setDouble(5, transaction.getDebitAmount());
             preparedStatement.setDouble(6, transaction.getCreditAmount());
-            preparedStatement.setString(7, transaction.getTransactionType().toString());
+            preparedStatement.setString(7, transaction.getTransactionType().name());
             preparedStatement.setString(8, transaction.getDescription());
             preparedStatement.setString(9, String.valueOf(transaction.getTransactionId()));
             preparedStatement.executeUpdate();
@@ -102,10 +104,10 @@ public class TransactionDAO {
             long accountNumber = resultSet.getLong("accountnumber");
             String accountName = resultSet.getString("accountname");
             LocalDate valueDate = resultSet.getDate("valuedate").toLocalDate();
-            String currency = resultSet.getString("currency");
+            CurrencyEnum currency = CurrencyEnum.valueOf(resultSet.getString("currency"));
             double debitAmount = resultSet.getDouble("debitamount");
             double creditAmount = resultSet.getDouble("creditamount");
-            String transactionType = resultSet.getString("transactiontype");
+            TransactionTypeEnum transactionType = TransactionTypeEnum.valueOf(resultSet.getString("transactiontype"));
             String description = resultSet.getString("description");
             transaction = new Transaction(transactionId, accountNumber, accountName, valueDate, currency, debitAmount, creditAmount, transactionType, description);
         }
@@ -119,10 +121,10 @@ public class TransactionDAO {
             long accountNumber = resultSet.getLong("accountnumber");
             String accountName = resultSet.getString("accountname");
             LocalDate valueDate = resultSet.getDate("valuedate").toLocalDate();
-            String currency = resultSet.getString("currency");
+            CurrencyEnum currency = CurrencyEnum.valueOf(resultSet.getString("currency"));
             double debitAmount = resultSet.getDouble("debitamount");
             double creditAmount = resultSet.getDouble("creditamount");
-            String transactionType = resultSet.getString("transactiontype");
+            TransactionTypeEnum transactionType = TransactionTypeEnum.valueOf(resultSet.getString("transactiontype"));
             String description = resultSet.getString("description");
 
             Transaction transaction = new Transaction(transactionId, accountNumber, accountName, valueDate, currency, debitAmount, creditAmount, transactionType, description);

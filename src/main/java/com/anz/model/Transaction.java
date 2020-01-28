@@ -25,19 +25,19 @@ public class Transaction {
                        @JsonProperty("accountId") long accountId,
                        @JsonProperty("accountName") String accountName,
                        @JsonProperty("valueDate") LocalDate valueDate,
-                       @JsonProperty("currency") String currency,
+                       @JsonProperty("currency") CurrencyEnum currency,
                        @JsonProperty("debitAmount") double debitAmount,
                        @JsonProperty("creditAmount") double creditAmount,
-                       @JsonProperty("transactionType") String transactionType,
+                       @JsonProperty("transactionType") TransactionTypeEnum transactionType,
                        @JsonProperty("description") String description) {
         this.transactionId = transactionId;
         this.accountId = accountId;
         this.accountName = accountName;
         this.valueDate = valueDate;
-        this.currency = CurrencyEnum.valueOf(currency);
+        this.currency = currency;
         this.debitAmount = debitAmount;
         this.creditAmount = creditAmount;
-        this.transactionType = TransactionTypeEnum.valueOf(transactionType);
+        this.transactionType = transactionType;
         this.description = description;
     }
 

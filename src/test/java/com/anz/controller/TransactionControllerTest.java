@@ -49,9 +49,9 @@ public class TransactionControllerTest {
         // Given
         List<Transaction> transactions = Arrays.asList(
                 new Transaction(1l, 1l, "Bill", LocalDate.now(),
-                        CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1"),
+                        CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1"),
                 new Transaction(2l, 1l, "Bill", LocalDate.now(),
-                        CurrencyEnum.AUD.toString(), 865.47, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc2")
+                        CurrencyEnum.AUD, 865.47, 0.0, TransactionTypeEnum.CREDIT, "desc2")
         );
         for (Transaction transaction : transactions) {
             transactionDAO.create(transaction);
@@ -74,7 +74,7 @@ public class TransactionControllerTest {
 
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
                 LocalDate.of(2019, 01, 01),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
         transactionDAO.create(expectedTransaction);
 
         // When
@@ -94,7 +94,7 @@ public class TransactionControllerTest {
 
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
                 LocalDate.of(2019, 01, 01),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
         transactionDAO.create(expectedTransaction);
 
         // When
@@ -112,7 +112,7 @@ public class TransactionControllerTest {
         accountDAO.insert(insert);
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
                 LocalDate.of(2019, 01, 01),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
         TestResponse<Transaction> response = transactionClient.addNewTransaction(expectedTransaction);
 
         // Then
@@ -126,7 +126,7 @@ public class TransactionControllerTest {
     void addNewTransaction_InvalidInput() throws SQLException {
         //Given
         Transaction expectedTransaction = new Transaction(-11, -1, "Bill",
-                null, CurrencyEnum.AUD.toString(), 1548.24, -10, TransactionTypeEnum.CREDIT.toString(), null);
+                null, CurrencyEnum.AUD, 1548.24, -10, TransactionTypeEnum.CREDIT, null);
         // When
         TestResponse<Transaction> response = transactionClient.addNewTransaction(expectedTransaction);
 
@@ -144,12 +144,12 @@ public class TransactionControllerTest {
 
         Transaction expectedTransaction = new Transaction(1, 1, "Bill",
                 LocalDate.of(2019, 01, 01),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
         transactionDAO.create(expectedTransaction);
 
         Transaction toBeUpdated = new Transaction(1, 1, "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
         HttpStatus status = transactionClient.updateTransaction(toBeUpdated);
         //then
         assertThat(status, equalTo(HttpStatus.OK));
@@ -162,7 +162,7 @@ public class TransactionControllerTest {
         //Given
         Transaction toBeUpdated = new Transaction(1, 1, "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
 
         //When
         HttpStatus status = transactionClient.updateTransaction(toBeUpdated);
@@ -179,7 +179,7 @@ public class TransactionControllerTest {
 
         Transaction toBeDeleted = new Transaction(1, 1, "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
         transactionDAO.create(toBeDeleted);
 
         //when
@@ -200,7 +200,7 @@ public class TransactionControllerTest {
 
         Transaction toBeDeleted = new Transaction(1, 1, "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(), 1548.24, 0.0, TransactionTypeEnum.CREDIT.toString(), "desc1");
+                CurrencyEnum.AUD, 1548.24, 0.0, TransactionTypeEnum.CREDIT, "desc1");
         transactionDAO.create(toBeDeleted);
         //when
         HttpStatus status = transactionClient.deleteTransactionById(100);

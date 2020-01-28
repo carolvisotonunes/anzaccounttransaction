@@ -26,10 +26,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.emptyList()));
     }
@@ -40,10 +40,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.emptyList()));
     }
@@ -54,10 +54,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.emptyList()));
     }
@@ -68,10 +68,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.emptyList()));
     }
@@ -82,10 +82,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.emptyList()));
     }
@@ -96,10 +96,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.emptyList()));
     }
@@ -110,10 +110,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.emptyList()));
     }
@@ -124,10 +124,10 @@ public class TransactionValidatorTest {
                 1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("transactionId", "Transaction Id must be a positive number"))));
     }
@@ -138,10 +138,10 @@ public class TransactionValidatorTest {
                 -1,
                 "Bill",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("accountId", "Account Id must be a positive number"))));
     }
@@ -152,10 +152,10 @@ public class TransactionValidatorTest {
                 1,
                 "",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("accountName", "Account Name must not be empty"))));
     }
@@ -166,10 +166,10 @@ public class TransactionValidatorTest {
                 1,
                 null,
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("accountName", "Account Name must not be null"))));
     }
@@ -180,10 +180,10 @@ public class TransactionValidatorTest {
                 1,
                 "Tim",
                 null,
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 1548.24,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("valueDate", "Value Date must not be null"))));
     }
@@ -194,10 +194,10 @@ public class TransactionValidatorTest {
                 1,
                 "Tim",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 -1,
                 0.0,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("debitAmount", "Debit Amount must not be a negative value"))));
     }
@@ -208,10 +208,10 @@ public class TransactionValidatorTest {
                 1,
                 "Tim",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 100,
                 -1,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "desc1");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("creditAmount", "Credit Amount must not be a negative value"))));
     }
@@ -222,10 +222,10 @@ public class TransactionValidatorTest {
                 1,
                 "Tim",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 100,
                 2,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 null);
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("description", "Description must not be null"))));
     }
@@ -236,10 +236,10 @@ public class TransactionValidatorTest {
                 1,
                 "Tim",
                 LocalDate.now(),
-                CurrencyEnum.AUD.toString(),
+                CurrencyEnum.AUD,
                 100,
                 2,
-                TransactionTypeEnum.CREDIT.toString(),
+                TransactionTypeEnum.CREDIT,
                 "");
         assertThat(transactionValidator.validate(transaction), equalTo(Collections.singletonList(new ValidationError("description", "Description must not be empty"))));
     }
