@@ -9,7 +9,6 @@ import com.anz.enums.CurrencyEnum;
 import com.anz.enums.TransactionTypeEnum;
 import com.anz.model.Account;
 import com.anz.model.Transaction;
-import com.anz.responses.TransactionsResponse;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void getTransactionsWhenRequestSucceeds() throws SQLException, URISyntaxException {
+    public void shouldReturnTransactionsWhenRequestSucceeds() throws SQLException, URISyntaxException {
         // Given
         List<Transaction> transactions = Arrays.asList(
                 new Transaction(1l, 1l, "Bill", LocalDate.now(),
@@ -66,7 +65,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void retrieveTransactionById() throws SQLException {
+    public void shouldRetrieveTransactionByIdWhenRequestSucceeds() throws SQLException {
         // Given
         Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
@@ -86,7 +85,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void retrieveTransactionById_NotFound() throws SQLException {
+    public void shouldReturnNotFoundWhenTransactionIdDoesNotExist() throws SQLException {
         // Given
         Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
@@ -105,7 +104,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    void addNewTransaction() throws SQLException {
+    void shouldReturnCreatedFromInsertWhenTransactionIsValid() throws SQLException {
         // Given
         Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
@@ -123,7 +122,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    void addNewTransaction_InvalidInput() throws SQLException {
+    void shouldReturnBadRequestWhenTransactionIsInValid() throws SQLException {
         //Given
         Transaction expectedTransaction = new Transaction(-11, -1, "Bill",
                 null, CurrencyEnum.AUD, 1548.24, -10, TransactionTypeEnum.CREDIT, null);
@@ -136,7 +135,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    void updateTransaction() throws SQLException {
+    void shouldReturnOkFromUpdateWhenTransactionIsValid() throws SQLException {
         //Given
         Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
@@ -158,7 +157,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    void updateTransaction_Not_Found() throws SQLException {
+    void shouldReturnNotFoundFromUpdateWhenTransactionIsInValid() throws SQLException {
         //Given
         Transaction toBeUpdated = new Transaction(1, 1, "Bill",
                 LocalDate.now(),
@@ -172,7 +171,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    void deleteTransaction() throws SQLException {
+    void shouldReturnOkFromDeleteWhenTransactionIsValid() throws SQLException {
         Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);
         accountDAO.insert(insert);
@@ -192,7 +191,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    void deleteTransaction_notFound() throws SQLException {
+    void shouldReturnNotFoundFromDeleteWhenTransactionIsInValid() throws SQLException {
         //given
         Account insert = new Account(1, 78541236, "Bill", AccountTypeEnum.SAVINGS,
                 LocalDate.of(2019, 12, 1), CurrencyEnum.AUD, 1000);

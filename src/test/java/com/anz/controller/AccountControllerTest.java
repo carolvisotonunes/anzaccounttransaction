@@ -36,10 +36,8 @@ public class AccountControllerTest {
         dbHelper.truncate();
     }
 
-    // should<DoSomething>When<SomethingHappens>
-    // returns<Something>When<SomethingHappens>
     @Test
-    public void returnsAccountsWhenRequestSucceeds() throws URISyntaxException, SQLException {
+    public void shouldReturnAccountsWhenRequestSucceeds() throws URISyntaxException, SQLException {
         // Given
         List<Account> accounts = Arrays.asList(
                 new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0),
@@ -58,9 +56,8 @@ public class AccountControllerTest {
         assertThat(response.getBody(), equalTo(accounts));
     }
 
-    // shouldRetrieveAccountByIdWhenRequestSucceeds
     @Test
-    public void retrieveAccountById() throws SQLException {
+    public void shouldRetrieveAccountByIdWhenRequestSucceeds() throws SQLException {
         // Given
         Account expectedAccount = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(expectedAccount);
@@ -74,9 +71,8 @@ public class AccountControllerTest {
 
     }
 
-    // shouldReturnNotFoundWhenAccountIdDoesNotExist
     @Test
-    public void retrieveAccountById_NotFound() throws SQLException {
+    public void shouldReturnNotFoundWhenAccountIdDoesNotExist() throws SQLException {
         // Given
         Account expectedAccount = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
 
@@ -88,7 +84,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    void addNewAccount() throws SQLException {
+    void shouldReturnCreatedFromInsertWhenAccountIsValid() throws SQLException {
         // Given
         Account expectedAccount = new Account(1, 1, "Mark", AccountTypeEnum.SAVINGS,
                 LocalDate.now(), CurrencyEnum.AUD, 0);
@@ -101,7 +97,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    void addNewAccount_InvalidInput() throws SQLException {
+    void shouldReturnBadRequestWhenAccountIsInValid() throws SQLException {
         Account account = new Account(-1, -1, null, AccountTypeEnum.SAVINGS,
                 null, CurrencyEnum.AUD, -1);
         // When
@@ -112,7 +108,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    void updateAccount() throws SQLException {
+    void shouldReturnOkFromUpdateWhenAccountIsValid() throws SQLException {
         // Given
         Account insert = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(insert);
@@ -127,7 +123,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    void updateAccount_Not_Found() throws SQLException {
+    void shouldReturnNotFoundFromUpdateWhenAccountIsInValid() throws SQLException {
         //Given
         Account toBeUpdated = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         // When
@@ -139,7 +135,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    void deleteAccount() throws SQLException {
+    void shouldReturnOkFromDeleteWhenAccountIsValid() throws SQLException {
         // Given
         Account toBeDeleted = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(toBeDeleted);
@@ -153,7 +149,7 @@ public class AccountControllerTest {
     }
 
     @Test
-    void deleteAccount_notFound() throws SQLException {
+    void shouldReturnNotFoundFromDeleteWhenAccountIsInValid() throws SQLException {
         // Given
         Account account = new Account(1, 78541236, "Mark", AccountTypeEnum.SAVINGS, LocalDate.of(2019, 7, 1), CurrencyEnum.AUD, 0);
         accountDAO.insert(account);
